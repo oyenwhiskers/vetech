@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # VETech - Sandakan Veterinar Management System
 
 A comprehensive web-based management system for Sandakan Veterinar Department to manage customer records, pet information, treatments, bookings, collaborators, and QR-based pet identification tags.
@@ -21,6 +22,7 @@ A comprehensive web-based management system for Sandakan Veterinar Department to
 - Access complete treatment history for each pet
 - Add new treatment records directly from pet profiles
 - Track microchip numbers and special notes
+- **Nested under customers** - pets are managed in the context of their owner
 
 ### 4. **Collaborator Management (Klinik Swasta)**
 - Register private clinics as collaborators
@@ -47,7 +49,7 @@ A comprehensive web-based management system for Sandakan Veterinar Department to
 
 - **Framework**: Laravel 11.x
 - **Database**: MySQL (via XAMPP - database: vetech)
-- **Frontend**: Blade Templates with TailwindCSS
+- **Frontend**: Blade Templates with TailwindCSS (via CDN)
 - **QR Code**: Endroid QR Code Library
 - **Authentication**: Laravel Breeze
 
@@ -75,10 +77,15 @@ php artisan serve
 - Cannot manage other collaborators
 - Limited to treatment-related operations
 
+## Project Structure
+
+- **Pets are nested under Customers**: `/customers/{customer}/pets`
+- Reflects real-world relationship: one customer can have multiple pets
+- All pet operations require customer context
+
 ---
 
 **Developed for Sandakan Veterinar Department**
-
 
 ## About Laravel
 
@@ -132,3 +139,7 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+=======
+# vetech
+Veterinar System Competition
+>>>>>>> 71944222c2a1efe672e8584333f44693f2f1b62e
