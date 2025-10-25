@@ -58,6 +58,18 @@ Route::middleware('auth')->group(function () {
     // Tags
     Route::resource('tags', TagController::class);
     Route::get('tags/{tag}/download', [TagController::class, 'download'])->name('tags.download');
+
+    // Collaborator Treatment Management
+    Route::middleware('auth')->prefix('collaborator')->name('collaborator.')->group(function () {
+        Route::get('/scanner', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'scanner'])->name('scanner');
+        Route::get('/scan/{tagCode}', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'scan'])->name('scan');
+        Route::get('/treatments', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'index'])->name('treatments.index');
+        Route::get('/treatments/deleted-log', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'deletedLog'])->name('treatments.deleted-log');
+        Route::get('/pets/{pet}/treatments/create', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'create'])->name('treatments.create');
+        Route::post('/pets/{pet}/treatments', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'store'])->name('treatments.store');
+        Route::get('/treatments/{treatment}', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'show'])->name('treatments.show');
+        Route::delete('/treatments/{treatment}', [\App\Http\Controllers\CollaboratorTreatmentController::class, 'destroy'])->name('treatments.destroy');
+    });
 });
 
 // Breeze auth routes

@@ -14,17 +14,22 @@
     <!-- Alpine.js for small interactivity used by Breeze components -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+    <body class="font-sans antialiased bg-[#550000] min-h-screen">
+        <div class="min-h-screen flex flex-col items-center justify-center px-4">
+            <!-- Brand -->
+            <a href="/" class="block">
+                <x-application-logo class="text-white text-3xl md:text-4xl" />
+            </a>
+
+            <!-- Auth Card -->
+            <div class="w-full sm:max-w-md mt-6 bg-white rounded-2xl shadow-2xl ring-1 ring-[#550000]/10">
+                <div class="px-7 py-6">
+                    {{ $slot }}
+                </div>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
+            <!-- Footer -->
+            <p class="mt-6 text-xs text-white/80">© {{ date('Y') }} VETech. All rights reserved.</p>
         </div>
     </body>
 </html>

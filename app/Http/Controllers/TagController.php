@@ -35,17 +35,18 @@ class TagController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        // Generate unique tag code
-        $tagCode = 'VET-' . strtoupper(Str::random(8));
+        // Generate unique plain number tag code (4 digits)
+        $tagCode = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
         while (Tag::where('tag_code', $tagCode)->exists()) {
-            $tagCode = 'VET-' . strtoupper(Str::random(8));
+            $tagCode = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
         }
 
         $validated['tag_code'] = $tagCode;
         $validated['status'] = 'active';
 
-        // Generate QR Code
-        $qrCode = QrCode::create(route('tags.scan', $tagCode))
+        // Generate QR Code with full URL for scanning
+        $scanUrl = url('collaborator/scan/' . $tagCode);
+        $qrCode = QrCode::create($scanUrl)
             ->setSize(300);
         
         $writer = new PngWriter();

@@ -1,8 +1,14 @@
 <x-guest-layout>
+    <!-- Header -->
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-semibold text-gray-900">Welcome back</h1>
+        <p class="text-sm text-gray-600 mt-1">Log in to your VETech account</p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
 
         <!-- Email Address -->
@@ -25,23 +31,29 @@
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
+        <div class="block">
             <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-[#550000] shadow-sm focus:ring-[#550000]" name="remember">
                 <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-between">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+                <a class="text-sm text-[#550000] hover:text-[#3a0000] font-medium" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button>
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
     </form>
+
+    <!-- Register CTA -->
+    <div class="mt-6 text-center text-sm text-gray-700">
+        <span>New to VETech?</span>
+        <a href="{{ route('register') }}" class="font-semibold text-[#550000] hover:text-[#3a0000]">Create an account</a>
+    </div>
 </x-guest-layout>
