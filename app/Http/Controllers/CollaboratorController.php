@@ -34,19 +34,28 @@ class CollaboratorController extends Controller
 
         $collaborator = Collaborator::create($validated);
 
-        // Create user account for collaborator
-        if ($request->has('create_account') && $request->create_account) {
-            User::create([
+        // Always create or update user account for collaborator and link it
+        $user = User::where('email', $validated['email'])->first();
+        if (!$user) {
+            $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($request->password ?? 'password123'),
                 'role' => 'collaborator',
                 'collaborator_id' => $collaborator->id,
             ]);
+        } else {
+            $user->name = $validated['name'];
+            $user->role = 'collaborator';
+            $user->collaborator_id = $collaborator->id;
+            if ($request->password) {
+                $user->password = Hash::make($request->password);
+            }
+            $user->save();
         }
 
         return redirect()->route('collaborators.index')
-            ->with('success', 'Collaborator created successfully.');
+            ->with('success', 'Collaborator created and linked to user account successfully.');
     }
 
     public function show(Collaborator $collaborator)

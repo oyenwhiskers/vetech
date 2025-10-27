@@ -75,7 +75,10 @@
             <h3 class="text-lg font-semibold mb-4">QR Code</h3>
             <div class="flex flex-col items-center">
                 @if($tag->qr_code_path)
-                    <img src="{{ asset('storage/' . $tag->qr_code_path) }}" alt="QR Code" class="w-64 h-64 mb-4">
+                    @php
+                        $isUrl = Str::startsWith($tag->qr_code_path, ['http://', 'https://']);
+                    @endphp
+                    <img src="{{ $isUrl ? $tag->qr_code_path : asset('storage/' . $tag->qr_code_path) }}" alt="QR Code" class="w-64 h-64 mb-4">
                     <p class="text-sm text-gray-600 text-center mb-4">
                         Scan this QR code to view pet information and treatment history
                     </p>

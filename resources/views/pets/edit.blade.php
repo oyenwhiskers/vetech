@@ -20,14 +20,12 @@
         <form action="{{ route('customers.pets.update', [$customer, $pet]) }}" method="POST">
             @csrf
             @method('PUT')
-            
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Pet Name *</label>
                     <input type="text" name="name" value="{{ old('name', $pet->name) }}" required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Species *</label>
@@ -40,7 +38,6 @@
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Gender *</label>
@@ -56,7 +53,6 @@
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Color</label>
@@ -69,30 +65,13 @@
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
                     </div>
                 </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Microchip Number</label>
-                    <input type="text" name="microchip_number" value="{{ old('microchip_number', $pet->microchip_number) }}"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
-                </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Special Notes</label>
                     <textarea name="special_notes" rows="3"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">{{ old('special_notes', $pet->special_notes) }}</textarea>
                 </div>
             </div>
-
-            <div class="mt-6 flex justify-between">
-                <form action="{{ route('customers.pets.destroy', [$customer, $pet]) }}" method="POST" 
-                    onsubmit="return confirm('Are you sure you want to delete this pet? All related records will be affected.');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
-                        <i class="fas fa-trash mr-2"></i>Delete Pet
-                    </button>
-                </form>
-
+            <div class="mt-6 flex justify-end">
                 <div class="flex space-x-3">
                     <a href="{{ route('customers.pets.show', [$customer, $pet]) }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
                         Cancel
@@ -102,6 +81,15 @@
                     </button>
                 </div>
             </div>
+        </form>
+
+        <form action="{{ route('customers.pets.destroy', [$customer, $pet]) }}" method="POST" 
+            onsubmit="return confirm('Are you sure you want to delete this pet? All related records will be affected.');" class="mt-4">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-trash mr-2"></i>Delete Pet
+            </button>
         </form>
     </div>
 </div>

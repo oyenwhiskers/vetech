@@ -30,7 +30,6 @@ class PetController extends Controller
             'gender' => 'required|in:male,female',
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
-            'microchip_number' => 'nullable|string|unique:pets,microchip_number|max:255',
             'special_notes' => 'nullable|string',
         ]);
 
@@ -77,7 +76,6 @@ class PetController extends Controller
             'gender' => 'required|in:male,female',
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
-            'microchip_number' => 'nullable|string|max:255|unique:pets,microchip_number,' . $pet->id,
             'special_notes' => 'nullable|string',
         ]);
 

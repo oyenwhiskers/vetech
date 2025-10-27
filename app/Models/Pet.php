@@ -21,7 +21,6 @@ class Pet extends Model
         'gender',
         'color',
         'weight',
-        'microchip_number',
         'special_notes',
     ];
 

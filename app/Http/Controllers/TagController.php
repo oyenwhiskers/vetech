@@ -44,18 +44,10 @@ class TagController extends Controller
         $validated['tag_code'] = $tagCode;
         $validated['status'] = 'active';
 
-        // Generate QR Code with full URL for scanning
+        // Use a free QR code API to generate the QR code URL
         $scanUrl = url('collaborator/scan/' . $tagCode);
-        $qrCode = QrCode::create($scanUrl)
-            ->setSize(300);
-        
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
-
-        // Save QR Code
-        $fileName = 'qrcodes/' . $tagCode . '.png';
-        Storage::disk('public')->put($fileName, $result->getString());
-        $validated['qr_code_path'] = $fileName;
+        $qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($scanUrl);
+        $validated['qr_code_path'] = $qrApiUrl;
 
         Tag::create($validated);
 
@@ -89,10 +81,7 @@ class TagController extends Controller
 
     public function destroy(Tag $tag)
     {
-        // Delete QR code file
-        if ($tag->qr_code_path) {
-            Storage::disk('public')->delete($tag->qr_code_path);
-        }
+
 
         $tag->delete();
 

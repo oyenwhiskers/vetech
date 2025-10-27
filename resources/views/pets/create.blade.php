@@ -70,11 +70,7 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Microchip Number</label>
-                    <input type="text" name="microchip_number" value="{{ old('microchip_number') }}"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
-                </div>
+
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Special Notes</label>

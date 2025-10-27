@@ -31,16 +31,29 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
+            'address' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        // Create collaborator record
+        $collaborator = \App\Models\Collaborator::create([
+            'name' => $request->name,
+            'clinic_name' => $request->name . " Clinic", // Or prompt for this in the form
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'registration_number' => strtoupper(uniqid('CLINIC')),
+            'status' => 'active',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            // Ensure public registrations are not admins by default
             'role' => 'collaborator',
+            'collaborator_id' => $collaborator->id,
         ]);
 
         event(new Registered($user));
