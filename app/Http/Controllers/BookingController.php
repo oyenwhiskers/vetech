@@ -25,7 +25,23 @@ class BookingController extends Controller
 
         $bookings = $query->orderBy('booking_date')->orderBy('booking_time')->paginate(15);
 
-        return view('bookings.index', compact('bookings'));
+        // Calculate metrics
+        $totalBookings = Booking::count();
+        $pendingBookings = Booking::where('status', 'pending')->count();
+        $confirmedBookings = Booking::where('status', 'confirmed')->count();
+        $completedBookings = Booking::where('status', 'completed')->count();
+        $cancelledBookings = Booking::where('status', 'cancelled')->count();
+        $todayBookings = Booking::whereDate('booking_date', today())->count();
+
+        return view('bookings.index', compact(
+            'bookings',
+            'totalBookings',
+            'pendingBookings',
+            'confirmedBookings',
+            'completedBookings',
+            'cancelledBookings',
+            'todayBookings'
+        ));
     }
 
     public function create()

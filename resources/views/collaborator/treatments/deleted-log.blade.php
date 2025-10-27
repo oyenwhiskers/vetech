@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="mb-6">
-    <a href="{{ route('collaborator.treatments.index') }}" class="text-[#550000] hover:text-[#3a0000] font-medium">
+    <a href="{{ route('collaborator.treatments.index') }}" class="text-blue-600 hover:text-blue-800 font-medium">
         <i class="fas fa-arrow-left mr-2"></i>Back to Treatments
     </a>
 </div>
@@ -61,7 +61,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('collaborator.treatments.show', $treatment) }}" 
-                                   class="text-[#550000] hover:text-[#3a0000]">
+                                   class="text-blue-600 hover:text-blue-800">
                                     View Details
                                 </a>
                             </td>

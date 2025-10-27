@@ -10,7 +10,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::withCount('pets')->latest()->paginate(15);
+        $customers = Customer::with(['pets.tag'])->withCount('pets')->latest()->paginate(15);
         return view('customers.index', compact('customers'));
     }
 

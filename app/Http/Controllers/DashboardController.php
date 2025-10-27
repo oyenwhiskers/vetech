@@ -102,6 +102,14 @@ class DashboardController extends Controller
         $totalCollaborators = Collaborator::where('status', 'active')->count();
         $todayBookings = Booking::whereDate('booking_date', today())->count();
         $pendingBookings = Booking::where('status', 'pending')->count();
+        $totalTreatments = Treatment::count();
+        $totalTags = \App\Models\Tag::count();
+        $unassignedTags = \App\Models\Tag::whereNull('pet_id')->count();
+        
+        // Booking status breakdown
+        $bookingStatusStats = Booking::select('status', DB::raw('COUNT(*) as count'))
+            ->groupBy('status')
+            ->get();
         
         // Recent bookings
         $recentBookings = Booking::with(['customer', 'pet'])
@@ -115,7 +123,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
         
-        // Monthly booking statistics
+        // Monthly booking statistics (last 6 months)
         $monthlyBookings = Booking::select(
             DB::raw('DATE_FORMAT(booking_date, "%Y-%m") as month'),
             DB::raw('COUNT(*) as count')
@@ -124,6 +132,31 @@ class DashboardController extends Controller
             ->groupBy('month')
             ->orderBy('month')
             ->get();
+        
+        // Pet species distribution
+        $speciesStats = Pet::select('species', DB::raw('COUNT(*) as count'))
+            ->groupBy('species')
+            ->orderByDesc('count')
+            ->get();
+        
+        // Treatment trends (last 30 days)
+        $dailyTreatments = Treatment::select(
+            DB::raw('DATE(treatment_date) as date'),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('treatment_date', '>=', now()->subDays(30))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+        
+        // Top collaborators by treatment count
+        $topCollaborators = Treatment::select('users.name', DB::raw('COUNT(*) as treatment_count'))
+            ->join('users', 'treatments.user_id', '=', 'users.id')
+            ->where('treatments.treatment_date', '>=', now()->subMonths(3))
+            ->groupBy('users.id', 'users.name')
+            ->orderByDesc('treatment_count')
+            ->limit(5)
+            ->get();
 
         return view('dashboard', compact(
             'totalCustomers',
@@ -131,9 +164,16 @@ class DashboardController extends Controller
             'totalCollaborators',
             'todayBookings',
             'pendingBookings',
+            'totalTreatments',
+            'totalTags',
+            'unassignedTags',
+            'bookingStatusStats',
             'recentBookings',
             'recentTreatments',
-            'monthlyBookings'
+            'monthlyBookings',
+            'speciesStats',
+            'dailyTreatments',
+            'topCollaborators'
         ));
     }
 }

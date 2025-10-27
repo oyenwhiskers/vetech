@@ -39,7 +39,7 @@
                         name="treatment_date" 
                         value="{{ old('treatment_date', date('Y-m-d')) }}"
                         max="{{ date('Y-m-d') }}"
-                        class="w-full text-base border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                         required
                     />
                     @error('treatment_date')
@@ -58,7 +58,7 @@
                         name="disease" 
                         value="{{ old('disease') }}"
                         placeholder="e.g., Parvovirus, Skin infection"
-                        class="w-full text-base border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                     />
                     @error('disease')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -75,7 +75,7 @@
                         name="diagnosis" 
                         rows="3"
                         placeholder="Describe the diagnosis and symptoms observed..."
-                        class="w-full text-base border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                         required
                     >{{ old('diagnosis') }}</textarea>
                     @error('diagnosis')
@@ -93,7 +93,7 @@
                         name="treatment_given" 
                         rows="3"
                         placeholder="Describe the treatment procedures performed..."
-                        class="w-full text-base border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                         required
                     >{{ old('treatment_given') }}</textarea>
                     @error('treatment_given')
@@ -111,7 +111,7 @@
                         name="medication" 
                         rows="2"
                         placeholder="List medications with dosage and frequency..."
-                        class="w-full text-base border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                     >{{ old('medication') }}</textarea>
                     @error('medication')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -131,7 +131,7 @@
                         step="0.01"
                         min="0"
                         placeholder="0.00"
-                        class="w-full text-base border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                     />
                     @error('cost')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -148,7 +148,7 @@
                         name="notes" 
                         rows="2"
                         placeholder="Any additional observations or follow-up instructions..."
-                        class="w-full text-base border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                     >{{ old('notes') }}</textarea>
                     @error('notes')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -163,7 +163,7 @@
                 </a>
                 <button 
                     type="submit"
-                    class="w-full sm:w-auto px-6 py-2.5 sm:py-2 bg-[#550000] text-white rounded-md hover:bg-[#3a0000] focus:outline-none focus:ring-2 focus:ring-[#550000] focus:ring-offset-2 transition font-medium"
+                    class="w-full sm:w-auto px-6 py-2.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition font-medium"
                 >
                     <i class="fas fa-save mr-2"></i>Save Treatment Record
                 </button>

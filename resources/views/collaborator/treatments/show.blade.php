@@ -14,7 +14,7 @@
 
     <!-- Treatment Details -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="bg-[#550000] text-white px-6 py-4">
+        <div class="bg-blue-600 text-white px-6 py-4">
             <div class="flex items-center justify-between">
                 <h3 class="text-xl font-bold">Treatment Record</h3>
                 <span class="px-3 py-1 bg-white/20 rounded-full text-sm">
@@ -134,7 +134,7 @@
 
     <!-- Actions -->
     <div class="mt-6 flex justify-between items-center">
-        <a href="{{ route('collaborator.treatments.index') }}" class="text-[#550000] hover:text-[#3a0000] font-medium">
+        <a href="{{ route('collaborator.treatments.index') }}" class="text-blue-600 hover:text-blue-800 font-medium">
             <i class="fas fa-arrow-left mr-2"></i>Back to Treatments
         </a>
 

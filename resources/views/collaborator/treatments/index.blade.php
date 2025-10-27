@@ -7,7 +7,7 @@
 <div class="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between sm:items-center px-4 sm:px-0">
     <div>
         <a href="{{ route('collaborator.scanner') }}" 
-           class="inline-block w-full sm:w-auto text-center px-4 py-2.5 sm:py-2 bg-[#550000] text-white rounded-md hover:bg-[#3a0000] transition font-medium">
+           class="inline-block w-full sm:w-auto text-center px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition font-medium">
             <i class="fas fa-qrcode mr-2"></i>Scan Tag
         </a>
     </div>
@@ -55,7 +55,7 @@
                     
                     <div class="flex gap-2 mt-3">
                         <a href="{{ route('collaborator.treatments.show', $treatment) }}" 
-                           class="text-sm text-[#550000] hover:text-[#3a0000] font-medium">
+                           class="text-sm text-blue-600 hover:text-blue-800 font-medium">
                             <i class="fas fa-eye mr-1"></i>View
                         </a>
                         @if(!$treatment->trashed())
@@ -122,7 +122,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('collaborator.treatments.show', $treatment) }}" 
-                                   class="text-[#550000] hover:text-[#3a0000] mr-3">
+                                   class="text-blue-600 hover:text-blue-800 mr-3">
                                     View
                                 </a>
                                 @if(!$treatment->trashed())
@@ -151,7 +151,7 @@
             <i class="fas fa-clipboard-list text-4xl sm:text-5xl mb-3 sm:mb-4"></i>
             <p class="text-base sm:text-lg">No treatment records found.</p>
             <a href="{{ route('collaborator.scanner') }}" 
-               class="inline-block mt-3 sm:mt-4 px-6 py-2.5 sm:py-2 bg-[#550000] text-white rounded-md hover:bg-[#3a0000] transition font-medium">
+               class="inline-block mt-3 sm:mt-4 px-6 py-2.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition font-medium">
                 Scan a Pet Tag to Add Treatment
             </a>
         </div>

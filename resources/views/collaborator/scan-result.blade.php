@@ -23,7 +23,7 @@
                 </div>
             </div>
             <a href="{{ route('collaborator.treatments.create', $tag->pet) }}" 
-               class="w-full sm:w-auto text-center px-4 py-2.5 sm:py-2 bg-[#550000] text-white rounded-md hover:bg-[#3a0000] transition font-medium">
+               class="w-full sm:w-auto text-center px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition font-medium">
                 <i class="fas fa-plus mr-2"></i>Add Treatment
             </a>
         </div>
@@ -33,7 +33,7 @@
                 <h4 class="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Pet Information</h4>
                 <dl class="space-y-1 text-xs sm:text-sm">
                     <div><dt class="inline font-medium">Gender:</dt> <dd class="inline">{{ ucfirst($tag->pet->gender) }}</dd></div>
-                    @if($tag->pet->date_of_birth)
+                    @if($tag->pet->age)
                         <div><dt class="inline font-medium">Age:</dt> <dd class="inline">{{ $tag->pet->age }} years</dd></div>
                     @endif
                     @if($tag->pet->weight)
@@ -111,7 +111,7 @@
 
                         <div class="mt-3 flex flex-wrap gap-2">
                             <a href="{{ route('collaborator.treatments.show', $treatment) }}" 
-                               class="text-xs sm:text-sm text-[#550000] hover:text-[#3a0000] font-medium">
+                               class="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium">
                                 <i class="fas fa-eye mr-1"></i>View Details
                             </a>
                             @if(!$treatment->trashed() && $treatment->canBeDeletedBy(Auth::user()))
@@ -138,7 +138,7 @@
                 <i class="fas fa-clipboard-list text-3xl sm:text-4xl mb-3"></i>
                 <p class="text-sm sm:text-base">No treatment records found.</p>
                 <a href="{{ route('collaborator.treatments.create', $tag->pet) }}" 
-                   class="inline-block mt-3 text-sm sm:text-base text-[#550000] hover:text-[#3a0000] font-medium">
+                   class="inline-block mt-3 text-sm sm:text-base text-blue-600 hover:text-blue-800 font-medium">
                     Add the first treatment record
                 </a>
             </div>
@@ -146,7 +146,7 @@
     </div>
 
     <div class="mt-4 sm:mt-6 mb-4">
-        <a href="{{ route('collaborator.scanner') }}" class="inline-block text-sm sm:text-base text-[#550000] hover:text-[#3a0000] font-medium">
+        <a href="{{ route('collaborator.scanner') }}" class="inline-block text-sm sm:text-base text-blue-600 hover:text-blue-800 font-medium">
             <i class="fas fa-arrow-left mr-2"></i>Back to Scanner
         </a>
     </div>

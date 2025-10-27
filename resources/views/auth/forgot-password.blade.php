@@ -23,7 +23,7 @@
         </div>
 
         <div class="flex items-center justify-between">
-            <a href="{{ route('login') }}" class="text-sm text-[#550000] hover:text-[#3a0000] font-medium">
+            <a href="{{ route('login') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
                 {{ __('Back to login') }}
             </a>
             <x-primary-button>

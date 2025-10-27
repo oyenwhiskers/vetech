@@ -49,6 +49,21 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Additional gate: Block collaborators with inactive status
+        $user = Auth::user();
+        if ($user && method_exists($user, 'isCollaborator') && $user->isCollaborator()) {
+            $user->loadMissing('collaborator');
+            if ($user->collaborator && $user->collaborator->status === 'inactive') {
+                // Immediately log them back out and show a friendly error
+                Auth::logout();
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'email' => 'Your account has been deactivated by the admin. Please contact the admin to resolve this problem.',
+                ]);
+            }
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

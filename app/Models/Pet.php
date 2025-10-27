@@ -17,7 +17,7 @@ class Pet extends Model
         'name',
         'species',
         'breed',
-        'date_of_birth',
+        'age',
         'gender',
         'color',
         'weight',
@@ -25,7 +25,7 @@ class Pet extends Model
     ];
 
     protected $casts = [
-        'date_of_birth' => 'date',
+        'age' => 'integer',
         'weight' => 'decimal:2',
     ];
 
@@ -59,16 +59,5 @@ class Pet extends Model
     public function tag(): HasOne
     {
         return $this->hasOne(Tag::class);
-    }
-
-    /**
-     * Get the pet's age.
-     */
-    public function getAgeAttribute()
-    {
-        if (!$this->date_of_birth) {
-            return null;
-        }
-        return $this->date_of_birth->diffInYears(now());
     }
 }

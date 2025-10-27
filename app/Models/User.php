@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'role',
         'collaborator_id',
+        'customer_id',
     ];
 
     /**
@@ -59,6 +60,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the customer profile associated with the user (for app users).
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    /**
      * Get the treatments performed by the user.
      */
     public function treatments(): HasMany
@@ -80,5 +89,13 @@ class User extends Authenticatable
     public function isCollaborator(): bool
     {
         return $this->role === 'collaborator';
+    }
+
+    /**
+     * Check if user is a customer (mobile app user).
+     */
+    public function isCustomer(): bool
+    {
+        return $this->role === 'customer';
     }
 }

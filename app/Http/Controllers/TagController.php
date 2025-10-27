@@ -30,29 +30,45 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'pet_id' => 'required|exists:pets,id|unique:tags,pet_id',
+            'pet_id' => 'nullable|exists:pets,id|unique:tags,pet_id',
             'issued_date' => 'required|date',
+            'quantity' => 'required|integer|min:1|max:50',
             'notes' => 'nullable|string',
         ]);
 
-        // Generate unique plain number tag code (4 digits)
-        $tagCode = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-        while (Tag::where('tag_code', $tagCode)->exists()) {
+        $quantity = $validated['quantity'];
+        $createdTags = [];
+
+        for ($i = 0; $i < $quantity; $i++) {
+            // Generate unique plain number tag code (4 digits)
             $tagCode = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+            while (Tag::where('tag_code', $tagCode)->exists()) {
+                $tagCode = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+            }
+
+            $tagData = [
+                'tag_code' => $tagCode,
+                'pet_id' => ($i == 0 && !empty($validated['pet_id'])) ? $validated['pet_id'] : null,
+                'issued_date' => $validated['issued_date'],
+                'notes' => $validated['notes'],
+                'status' => 'active',
+            ];
+
+            // Generate QR code with ONLY the tag number (not a URL)
+            // Generic scanners will show just the number
+            // Custom mobile app scanner will append the correct URL
+            $qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($tagCode);
+            $tagData['qr_code_path'] = $qrApiUrl;
+
+            $createdTags[] = Tag::create($tagData);
         }
 
-        $validated['tag_code'] = $tagCode;
-        $validated['status'] = 'active';
-
-        // Use a free QR code API to generate the QR code URL
-        $scanUrl = url('collaborator/scan/' . $tagCode);
-        $qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($scanUrl);
-        $validated['qr_code_path'] = $qrApiUrl;
-
-        Tag::create($validated);
+        $message = $quantity == 1 
+            ? 'Tag created successfully.' 
+            : "{$quantity} tags created successfully.";
 
         return redirect()->route('tags.index')
-            ->with('success', 'Tag created successfully.');
+            ->with('success', $message);
     }
 
     public function show(Tag $tag)
@@ -100,7 +116,26 @@ class TagController extends Controller
 
     public function download(Tag $tag)
     {
-        if (!$tag->qr_code_path || !Storage::disk('public')->exists($tag->qr_code_path)) {
+        if (!$tag->qr_code_path) {
+            return redirect()->back()->with('error', 'QR Code not found.');
+        }
+
+        // Check if it's an external URL (API-generated QR code)
+        if (Str::startsWith($tag->qr_code_path, ['http://', 'https://'])) {
+            // Fetch the QR code image from the external URL
+            $imageContent = @file_get_contents($tag->qr_code_path);
+            
+            if ($imageContent === false) {
+                return redirect()->back()->with('error', 'Unable to download QR Code.');
+            }
+            
+            return response($imageContent)
+                ->header('Content-Type', 'image/png')
+                ->header('Content-Disposition', 'attachment; filename="' . $tag->tag_code . '.png"');
+        }
+        
+        // For local storage files (if any exist)
+        if (!Storage::disk('public')->exists($tag->qr_code_path)) {
             return redirect()->back()->with('error', 'QR Code not found.');
         }
 

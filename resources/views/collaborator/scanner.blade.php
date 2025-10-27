@@ -7,7 +7,7 @@
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <div class="text-center mb-4 sm:mb-6">
-            <i class="fas fa-qrcode text-5xl sm:text-6xl text-[#550000] mb-3 sm:mb-4"></i>
+            <i class="fas fa-qrcode text-5xl sm:text-6xl text-blue-600 mb-3 sm:mb-4"></i>
             <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Scan Pet Tag</h3>
             <p class="text-sm sm:text-base text-gray-600">Scan QR code or enter tag number to view medical records</p>
         </div>
@@ -25,7 +25,7 @@
                 <button 
                     id="startScanBtn"
                     onclick="startCamera()"
-                    class="w-full sm:w-auto px-6 py-2.5 bg-[#550000] text-white rounded-md hover:bg-[#3a0000] transition font-medium shadow-sm">
+                    class="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition font-medium shadow-sm">
                     <i class="fas fa-camera mr-2"></i>Open Camera Scanner
                 </button>
             </div>
@@ -34,7 +34,7 @@
                 <div class="relative bg-black rounded-lg overflow-hidden mb-3" style="max-width: 100%; aspect-ratio: 4/3;">
                     <div id="qrVideo" class="w-full h-full"></div>
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div class="border-4 border-[#550000] rounded-lg shadow-lg" style="width: 250px; height: 250px;">
+                        <div class="border-4 border-blue-600 rounded-lg shadow-lg" style="width: 250px; height: 250px;">
                             <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white"></div>
                             <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white"></div>
                             <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white"></div>
@@ -64,12 +64,12 @@
                     id="tagCode" 
                     name="tagCode"
                     placeholder="e.g., 1010"
-                    class="flex-1 border-gray-300 focus:border-[#550000] focus:ring-[#550000] rounded-md shadow-sm uppercase text-base"
+                    class="flex-1 border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm uppercase text-base"
                     required
                 />
                 <button 
                     type="submit"
-                    class="w-full sm:w-auto px-6 py-2.5 sm:py-2 bg-[#550000] text-white rounded-md hover:bg-[#3a0000] focus:outline-none focus:ring-2 focus:ring-[#550000] focus:ring-offset-2 transition font-medium"
+                    class="w-full sm:w-auto px-6 py-2.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition font-medium"
                 >
                     <i class="fas fa-search mr-2"></i>Search
                 </button>
@@ -87,7 +87,7 @@
         </div>
 
         <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between">
-            <a href="{{ route('collaborator.treatments.index') }}" class="text-[#550000] hover:text-[#3a0000] font-medium text-center sm:text-left py-2 sm:py-0">
+            <a href="{{ route('collaborator.treatments.index') }}" class="text-blue-600 hover:text-blue-800 font-medium text-center sm:text-left py-2 sm:py-0">
                 <i class="fas fa-list mr-2"></i>View My Treatments
             </a>
             <a href="{{ route('collaborator.treatments.deleted-log') }}" class="text-gray-600 hover:text-gray-800 font-medium text-center sm:text-left py-2 sm:py-0">

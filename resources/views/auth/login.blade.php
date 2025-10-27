@@ -1,59 +1,101 @@
 <x-guest-layout>
     <!-- Header -->
-    <div class="text-center mb-6">
-        <h1 class="text-2xl font-semibold text-gray-900">Welcome back</h1>
-        <p class="text-sm text-gray-600 mt-1">Log in to your VETech account</p>
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
+        <p class="text-gray-600">Log in to your VETech account</p>
     </div>
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
+
+    <!-- Global Error (Prominent) -->
+    @if ($errors->has('email'))
+        <div class="mb-5 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 flex items-start gap-3">
+            <i class="fas fa-circle-exclamation mt-0.5"></i>
+            <div class="text-sm leading-5">
+                {{ $errors->first('email') }}
+            </div>
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-input-label for="email" :value="__('Email')" class="text-gray-700 font-semibold" />
+            <div class="relative mt-2">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-envelope text-gray-400"></i>
+                </div>
+                <x-text-input id="email" 
+                    class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                    type="email" 
+                    name="email" 
+                    :value="old('email')" 
+                    required 
+                    autofocus 
+                    autocomplete="username"
+                    placeholder="your@email.com" />
+            </div>
+          <!-- Field-level email error is suppressed to avoid duplicate messages.
+              The prominent red banner above already displays the email error (including deactivation message). -->
         </div>
 
         <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
+        <div>
+            <x-input-label for="password" :value="__('Password')" class="text-gray-700 font-semibold" />
+            <div class="relative mt-2">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-gray-400"></i>
+                </div>
+                <x-text-input id="password" 
+                    class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    type="password"
+                    name="password"
+                    required 
+                    autocomplete="current-password"
+                    placeholder="••••••••" />
+            </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-[#550000] shadow-sm focus:ring-[#550000]" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
+        <!-- Remember Me & Forgot Password -->
         <div class="flex items-center justify-between">
+            <label for="remember_me" class="inline-flex items-center cursor-pointer">
+                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500" name="remember">
+                <span class="ms-2 text-sm text-gray-700 font-medium">Remember me</span>
+            </label>
+
             @if (Route::has('password.request'))
-                <a class="text-sm text-[#550000] hover:text-[#3a0000] font-medium" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                <a class="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors" href="{{ route('password.request') }}">
+                    Forgot password?
                 </a>
             @endif
-
-            <x-primary-button>
-                {{ __('Log in') }}
-            </x-primary-button>
         </div>
+
+        <!-- Login Button -->
+        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center">
+            <i class="fas fa-sign-in-alt mr-2"></i>
+            Log In
+        </button>
     </form>
 
+    <!-- Divider -->
+    <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white text-gray-500">New to VETech?</span>
+        </div>
+    </div>
+
     <!-- Register CTA -->
-    <div class="mt-6 text-center text-sm text-gray-700">
-        <span>New to VETech?</span>
-        <a href="{{ route('register') }}" class="font-semibold text-[#550000] hover:text-[#3a0000]">Create an account</a>
+    <div class="text-center">
+        <a href="{{ route('register') }}" class="inline-flex items-center justify-center w-full px-4 py-3 border-2 border-blue-500 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200">
+            <i class="fas fa-user-plus mr-2"></i>
+            Create Collaborator Account
+        </a>
     </div>
 </x-guest-layout>

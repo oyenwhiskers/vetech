@@ -5,67 +5,79 @@
 
 @section('content')
 <div class="mb-6">
-    <a href="{{ route('customers.show', $customer) }}" class="text-blue-600 hover:text-blue-800">
+    <a href="{{ route('customers.index', ['view' => $customer->id]) }}" class="text-blue-600 hover:text-blue-800">
         <i class="fas fa-arrow-left mr-2"></i>Back to Customer
     </a>
 </div>
 
+
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Pet Info -->
     <div class="lg:col-span-1">
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex justify-between items-start mb-4">
-                <h3 class="text-lg font-semibold">Pet Information</h3>
-                <a href="{{ route('customers.pets.edit', [$customer, $pet]) }}" class="text-blue-600 hover:text-blue-800">
-                    <i class="fas fa-edit"></i>
-                </a>
+        <div class="bg-white rounded-2xl shadow-2xl p-8 flex flex-col gap-4">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-2xl font-bold text-[#334da1] flex items-center gap-2">
+                    <i class="fas fa-paw"></i> Pet Information
+                </h3>
+                <div class="flex gap-2">
+                    <a href="{{ route('customers.pets.edit', [$customer, $pet]) }}" class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium" title="Edit Pet">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{{ route('customers.pets.destroy', [$customer, $pet]) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this pet? All treatment records will also be deleted.')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium" title="Delete Pet">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="space-y-3">
-                <div>
-                    <p class="text-sm text-gray-500">Name</p>
-                    <p class="font-semibold text-lg">{{ $pet->name }}</p>
+            <div class="flex flex-col gap-2 text-gray-800">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-dog text-[#334da1]"></i>
+                    <span class="font-semibold text-lg">{{ $pet->name }}</span>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">Owner</p>
-                    <p><a href="{{ route('customers.show', $customer) }}" class="text-blue-600 hover:text-blue-800">{{ $customer->name }}</a></p>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-user text-gray-500"></i>
+                    <span>{{ $customer->name }}</span>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">Species / Breed</p>
-                    <p>{{ $pet->species }} / {{ $pet->breed ?: 'N/A' }}</p>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-dna text-gray-500"></i>
+                    <span>{{ $pet->species }} / {{ $pet->breed ?: 'N/A' }}</span>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">Gender</p>
-                    <p>{{ ucfirst($pet->gender) }}</p>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-venus-mars text-gray-500"></i>
+                    <span>{{ ucfirst($pet->gender) }}</span>
                 </div>
-                @if($pet->date_of_birth)
-                <div>
-                    <p class="text-sm text-gray-500">Age</p>
-                    <p>{{ $pet->age }} years old</p>
+                @if($pet->age)
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-hourglass-half text-gray-500"></i>
+                    <span>{{ $pet->age }} years old</span>
                 </div>
                 @endif
                 @if($pet->weight)
-                <div>
-                    <p class="text-sm text-gray-500">Weight</p>
-                    <p>{{ $pet->weight }} kg</p>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-weight text-gray-500"></i>
+                    <span>{{ $pet->weight }} kg</span>
                 </div>
                 @endif
                 @if($pet->color)
-                <div>
-                    <p class="text-sm text-gray-500">Color</p>
-                    <p>{{ $pet->color }}</p>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-palette text-gray-500"></i>
+                    <span>{{ $pet->color }}</span>
                 </div>
                 @endif
                 @if($pet->microchip_number)
-                <div>
-                    <p class="text-sm text-gray-500">Microchip</p>
-                    <p>{{ $pet->microchip_number }}</p>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-microchip text-gray-500"></i>
+                    <span>{{ $pet->microchip_number }}</span>
                 </div>
                 @endif
                 @if($pet->tag)
-                <div>
-                    <p class="text-sm text-gray-500">Tag Status</p>
-                    <a href="{{ route('tags.show', $pet->tag) }}" class="text-green-600 hover:text-green-800">
-                        <i class="fas fa-qrcode mr-1"></i>{{ $pet->tag->tag_code }}
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-qrcode text-green-600"></i>
+                    <a href="{{ route('tags.show', $pet->tag) }}" class="text-green-600 hover:text-green-800 font-semibold">
+                        {{ $pet->tag->tag_code }}
                     </a>
                 </div>
                 @endif
@@ -75,48 +87,58 @@
 
     <!-- Treatment History -->
     <div class="lg:col-span-2">
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Treatment History ({{ $pet->treatments->count() }})</h3>
+                <h3 class="text-2xl font-bold text-[#334da1] flex items-center gap-2">
+                    <i class="fas fa-notes-medical"></i> Treatment History ({{ $pet->treatments->count() }})
+                </h3>
                 <button onclick="document.getElementById('addTreatmentModal').classList.remove('hidden')" 
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
-                    <i class="fas fa-plus mr-2"></i>Add Treatment
+                    class="bg-[#334da1] hover:bg-[#2a3d85] text-white px-4 py-2 rounded-lg text-base font-semibold flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Add Treatment
                 </button>
             </div>
 
             @if($pet->treatments->count() > 0)
                 <div class="space-y-4">
                     @foreach($pet->treatments as $treatment)
-                        <div class="border rounded-lg p-4">
-                            <div class="flex justify-between items-start mb-2">
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-center mb-2">
                                 <div>
-                                    <p class="font-semibold">{{ $treatment->treatment_date->format('d M Y') }}</p>
-                                    <p class="text-sm text-gray-600">By {{ $treatment->user->name }}
+                                    <span class="font-bold text-lg text-[#334da1] flex items-center gap-2">
+                                        <i class="fas fa-calendar-day"></i> {{ $treatment->treatment_date->format('d M Y') }}
+                                    </span>
+                                    <span class="text-sm text-gray-600 flex items-center gap-2">
+                                        <i class="fas fa-user-md"></i> By {{ $treatment->user->name }}
                                         @if($treatment->collaborator)
-                                            at {{ $treatment->collaborator->clinic_name }}
+                                            <span class="ml-2"><i class="fas fa-clinic-medical"></i> {{ $treatment->collaborator->clinic_name }}</span>
                                         @endif
-                                    </p>
+                                    </span>
                                 </div>
-                                <span class="px-2 py-1 text-xs rounded-full {{ $treatment->treatment_location == 'government' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
+                                <span class="px-3 py-1 text-xs rounded-full {{ $treatment->treatment_location == 'government' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }} font-semibold">
                                     {{ ucfirst($treatment->treatment_location) }}
                                 </span>
                             </div>
-                            @if($treatment->disease)
-                                <p class="text-sm"><strong>Disease:</strong> {{ $treatment->disease }}</p>
-                            @endif
-                            <p class="text-sm"><strong>Diagnosis:</strong> {{ $treatment->diagnosis }}</p>
-                            <p class="text-sm"><strong>Treatment:</strong> {{ $treatment->treatment_given }}</p>
-                            @if($treatment->medication)
-                                <p class="text-sm"><strong>Medication:</strong> {{ $treatment->medication }}</p>
-                            @endif
-                            @if($treatment->cost)
-                                <p class="text-sm"><strong>Cost:</strong> RM {{ number_format($treatment->cost, 2) }}</p>
-                            @endif
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                                @if($treatment->disease)
+                                    <div class="text-sm"><strong>Disease:</strong> {{ $treatment->disease }}</div>
+                                @endif
+                                <div class="text-sm"><strong>Diagnosis:</strong> {{ $treatment->diagnosis }}</div>
+                                <div class="text-sm"><strong>Treatment:</strong> {{ $treatment->treatment_given }}</div>
+                                @if($treatment->medication)
+                                    <div class="text-sm"><strong>Medication:</strong> {{ $treatment->medication }}</div>
+                                @endif
+                                @if($treatment->cost)
+                                    <div class="text-sm"><strong>Cost:</strong> RM {{ number_format($treatment->cost, 2) }}</div>
+                                @endif
+                            </div>
                         </div>
                     @endforeach
                 </div>
             @else
-                <p class="text-gray-500 text-center py-8">No treatment records yet</p>
+                <div class="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                    <i class="fas fa-notes-medical text-4xl text-gray-400 mb-3"></i>
+                    <p class="text-gray-500 font-medium">No treatment records yet</p>
+                </div>
             @endif
         </div>
     </div>

@@ -4,14 +4,92 @@
 @section('header', 'Manage Bookings')
 
 @section('content')
-<div class="mb-6 flex justify-between items-center">
+<div class="mb-6">
     <div>
         <h3 class="text-lg font-semibold">Booking Management</h3>
         <p class="text-sm text-gray-600">Manage appointments and queue</p>
     </div>
-    <a href="{{ route('bookings.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-        <i class="fas fa-plus mr-2"></i>New Booking
-    </a>
+</div>
+
+<!-- Metrics Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+    <!-- Total Bookings -->
+    <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-4 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90">Total Bookings</p>
+                <p class="text-3xl font-bold mt-1">{{ $totalBookings }}</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i class="fas fa-clipboard-list text-2xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Bookings -->
+    <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-4 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90">Today</p>
+                <p class="text-3xl font-bold mt-1">{{ $todayBookings }}</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i class="fas fa-calendar-alt text-2xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending -->
+    <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-4 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90">Pending</p>
+                <p class="text-3xl font-bold mt-1">{{ $pendingBookings }}</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i class="fas fa-hourglass-half text-2xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmed -->
+    <div class="bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-xl shadow-lg p-4 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90">Confirmed</p>
+                <p class="text-3xl font-bold mt-1">{{ $confirmedBookings }}</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i class="fas fa-calendar-check text-2xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed -->
+    <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-4 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90">Completed</p>
+                <p class="text-3xl font-bold mt-1">{{ $completedBookings }}</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i class="fas fa-check-circle text-2xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancelled -->
+    <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg p-4 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90">Cancelled</p>
+                <p class="text-3xl font-bold mt-1">{{ $cancelledBookings }}</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i class="fas fa-ban text-2xl"></i>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Filters -->

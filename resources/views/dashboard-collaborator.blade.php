@@ -5,14 +5,14 @@
 
 @section('content')
 <!-- Welcome Message -->
-<div class="bg-gradient-to-r from-[#550000] to-[#3a0000] rounded-lg shadow-lg p-4 sm:p-6 mb-6 text-white">
+<div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-4 sm:p-6 mb-6 text-white">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
             <h2 class="text-xl sm:text-2xl font-bold mb-1">Welcome back, {{ Auth::user()->name }}! 👋</h2>
             <p class="text-white/80 text-sm sm:text-base">Here's your treatment activity summary</p>
         </div>
         <a href="{{ route('collaborator.scanner') }}" 
-           class="w-full sm:w-auto text-center px-6 py-2.5 bg-white text-[#550000] rounded-md hover:bg-gray-100 transition font-medium shadow-md">
+           class="w-full sm:w-auto text-center px-6 py-2.5 bg-white text-blue-600 rounded-md hover:bg-gray-100 transition font-medium shadow-md">
             <i class="fas fa-qrcode mr-2"></i>Scan Pet Tag
         </a>
     </div>
@@ -78,7 +78,7 @@
     <div class="bg-white rounded-lg shadow">
         <div class="px-4 sm:px-6 py-3 sm:py-4 border-b">
             <h3 class="text-base sm:text-lg font-semibold text-gray-900">
-                <i class="fas fa-paw mr-2 text-[#550000]"></i>Species Treated
+                <i class="fas fa-paw mr-2 text-blue-600"></i>Species Treated
             </h3>
         </div>
         <div class="p-4 sm:p-6">
@@ -87,13 +87,13 @@
                     @foreach($speciesStats as $stat)
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <div class="w-2 h-2 rounded-full bg-[#550000] mr-3"></div>
+                                <div class="w-2 h-2 rounded-full bg-blue-600 mr-3"></div>
                                 <span class="text-sm font-medium text-gray-700">{{ ucfirst($stat->species) }}</span>
                             </div>
                             <span class="text-sm font-bold text-gray-900">{{ $stat->count }}</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-[#550000] h-2 rounded-full" style="width: {{ ($stat->count / $myTreatmentsTotal) * 100 }}%"></div>
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: {{ ($stat->count / $myTreatmentsTotal) * 100 }}%"></div>
                         </div>
                     @endforeach
                 </div>
@@ -107,7 +107,7 @@
     <div class="bg-white rounded-lg shadow">
         <div class="px-4 sm:px-6 py-3 sm:py-4 border-b">
             <h3 class="text-base sm:text-lg font-semibold text-gray-900">
-                <i class="fas fa-map-marker-alt mr-2 text-[#550000]"></i>Treatment Locations
+                <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>Treatment Locations
             </h3>
         </div>
         <div class="p-4 sm:p-6">
@@ -136,7 +136,7 @@
     <div class="bg-white rounded-lg shadow">
         <div class="px-4 sm:px-6 py-3 sm:py-4 border-b">
             <h3 class="text-base sm:text-lg font-semibold text-gray-900">
-                <i class="fas fa-chart-line mr-2 text-[#550000]"></i>6-Month Activity
+                <i class="fas fa-chart-line mr-2 text-blue-600"></i>6-Month Activity
             </h3>
         </div>
         <div class="p-4 sm:p-6">
@@ -152,7 +152,7 @@
                                 <span class="font-bold">{{ $month->count }}</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-[#550000] h-2 rounded-full transition-all duration-300" 
+                                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
                                      style="width: {{ $maxCount > 0 ? ($month->count / $maxCount) * 100 : 0 }}%"></div>
                             </div>
                         </div>
@@ -169,10 +169,10 @@
 <div class="bg-white rounded-lg shadow">
     <div class="px-4 sm:px-6 py-3 sm:py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <h3 class="text-base sm:text-lg font-semibold text-gray-900">
-            <i class="fas fa-history mr-2 text-[#550000]"></i>My Recent Treatments
+            <i class="fas fa-history mr-2 text-blue-600"></i>My Recent Treatments
         </h3>
         <a href="{{ route('collaborator.treatments.index') }}" 
-           class="text-sm text-[#550000] hover:text-[#3a0000] font-medium">
+           class="text-sm text-blue-600 hover:text-blue-800 font-medium">
             View All →
         </a>
     </div>
@@ -251,7 +251,7 @@
                 <i class="fas fa-clipboard-list text-4xl sm:text-5xl text-gray-300 mb-4"></i>
                 <p class="text-gray-500 mb-4 text-sm sm:text-base">No treatment records yet</p>
                 <a href="{{ route('collaborator.scanner') }}" 
-                   class="inline-block px-6 py-2.5 bg-[#550000] text-white rounded-md hover:bg-[#3a0000] transition font-medium">
+                   class="inline-block px-6 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-800 transition font-medium">
                     <i class="fas fa-qrcode mr-2"></i>Scan Your First Pet Tag
                 </a>
             </div>
@@ -263,7 +263,7 @@
 <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
     <a href="{{ route('collaborator.scanner') }}" 
        class="flex items-center p-4 bg-white rounded-lg shadow hover:shadow-md transition">
-        <div class="flex-shrink-0 w-12 h-12 bg-[#550000] rounded-lg flex items-center justify-center">
+        <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
             <i class="fas fa-qrcode text-white text-xl"></i>
         </div>
         <div class="ml-4">

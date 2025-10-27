@@ -20,8 +20,13 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Pet</label>
-                    <input type="text" value="{{ $tag->pet->name }} - {{ $tag->pet->customer->name }}" disabled
-                        class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm p-2 border">
+                    @if($tag->pet)
+                        <input type="text" value="{{ $tag->pet->name }} - {{ $tag->pet->customer->name }}" disabled
+                            class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm p-2 border">
+                    @else
+                        <input type="text" value="Not assigned - Assign via mobile app" disabled
+                            class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm p-2 border text-amber-600">
+                    @endif
                 </div>
 
                 <div>

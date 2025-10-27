@@ -36,7 +36,7 @@
             <div class="space-y-2 text-sm">
                 <p><i class="fas fa-venus-mars mr-2 text-gray-400"></i>{{ ucfirst($pet->gender) }}</p>
                 @if($pet->age)
-                    <p><i class="fas fa-birthday-cake mr-2 text-gray-400"></i>{{ $pet->age }} years old</p>
+                    <p><i class="fas fa-hourglass-half mr-2 text-gray-400"></i>{{ $pet->age }} years old</p>
                 @endif
                 @if($pet->weight)
                     <p><i class="fas fa-weight mr-2 text-gray-400"></i>{{ $pet->weight }} kg</p>

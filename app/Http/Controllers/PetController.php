@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Pet;
+use App\Models\Tag;
 use App\Models\Treatment;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class PetController extends Controller
             'name' => 'required|string|max:255',
             'species' => 'required|string|max:255',
             'breed' => 'nullable|string|max:255',
-            'date_of_birth' => 'nullable|date',
+            'age' => 'nullable|integer|min:0',
             'gender' => 'required|in:male,female',
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
@@ -36,8 +37,8 @@ class PetController extends Controller
         $validated['customer_id'] = $customer->id;
         $customer->pets()->create($validated);
 
-        return redirect()->route('customers.show', $customer)
-            ->with('success', 'Pet created successfully.');
+        return redirect()->route('customers.index')
+            ->with('success', 'Pet created successfully. You can assign a QR tag later from the Tags & QR Codes section.');
     }
 
     public function show(Customer $customer, Pet $pet)
@@ -72,7 +73,7 @@ class PetController extends Controller
             'name' => 'required|string|max:255',
             'species' => 'required|string|max:255',
             'breed' => 'nullable|string|max:255',
-            'date_of_birth' => 'nullable|date',
+            'age' => 'nullable|integer|min:0',
             'gender' => 'required|in:male,female',
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
@@ -94,7 +95,7 @@ class PetController extends Controller
         
         $pet->delete();
 
-        return redirect()->route('customers.show', $customer)
+        return redirect()->route('customers.index')
             ->with('success', 'Pet deleted successfully.');
     }
 
