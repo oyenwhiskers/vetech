@@ -72,6 +72,7 @@ class CollaboratorTreatmentController extends Controller
     {
         $validated = $request->validate([
             'treatment_date' => 'required|date',
+            'treated_by' => 'nullable|string|max:255',
             'disease' => 'nullable|string|max:255',
             'diagnosis' => 'required|string',
             'treatment_given' => 'required|string',

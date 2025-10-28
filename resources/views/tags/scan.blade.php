@@ -6,17 +6,55 @@
     <title>Pet Information - {{ $tag->tag_code }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+            }
+            .container {
+                padding: 0 !important;
+            }
+            .max-w-4xl {
+                max-width: 100% !important;
+                box-shadow: none !important;
+            }
+            /* Hide browser's default print headers and footers */
+            @page {
+                margin: 0.5cm;
+            }
+            /* Prevent page breaks inside important sections */
+            .pet-info-section,
+            .treatment-card {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            /* Add page break before treatment history if needed */
+            .treatment-history-section {
+                page-break-before: auto;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-blue-900">VETech - Sandakan Veterinar</h1>
-                <p class="text-gray-600">Pet Information & Treatment History</p>
+            <div class="mb-8">
+                <div class="text-center mb-4">
+                    <h1 class="text-3xl font-bold text-blue-900">VETech - Department of Veterinary Services Sabah</h1>
+                    <p class="text-gray-600">Pet Information & Treatment History</p>
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-200 no-print">
+                        <i class="fas fa-print mr-2"></i>Print
+                    </button>
+                </div>
             </div>
 
             <!-- Pet Info -->
-            <div class="border-b pb-6 mb-6">
+            <div class="border-b pb-6 mb-6 pet-info-section">
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <h2 class="text-2xl font-semibold">{{ $tag->pet->name }}</h2>
@@ -65,13 +103,13 @@
             </div>
 
             <!-- Treatment History -->
-            <div>
+            <div class="treatment-history-section">
                 <h3 class="text-xl font-semibold mb-4">Treatment History ({{ $tag->pet->treatments->count() }})</h3>
                 
                 @if($tag->pet->treatments->count() > 0)
                     <div class="space-y-4">
                         @foreach($tag->pet->treatments as $treatment)
-                            <div class="border rounded-lg p-4 bg-gray-50">
+                            <div class="border rounded-lg p-4 bg-gray-50 treatment-card">
                                 <div class="flex justify-between items-start mb-2">
                                     <div>
                                         <p class="font-semibold">{{ $treatment->treatment_date->format('d M Y') }}</p>
@@ -92,7 +130,10 @@
                                 <p class="text-sm mb-1"><strong>Diagnosis:</strong> {{ $treatment->diagnosis }}</p>
                                 <p class="text-sm mb-1"><strong>Treatment:</strong> {{ $treatment->treatment_given }}</p>
                                 @if($treatment->medication)
-                                    <p class="text-sm"><strong>Medication:</strong> {{ $treatment->medication }}</p>
+                                    <p class="text-sm mb-1"><strong>Medication:</strong> {{ $treatment->medication }}</p>
+                                @endif
+                                @if($treatment->treated_by)
+                                    <p class="text-sm"><strong>Treated By:</strong> {{ $treatment->treated_by }}</p>
                                 @endif
                             </div>
                         @endforeach
@@ -102,8 +143,8 @@
                 @endif
             </div>
 
-            <div class="mt-8 text-center text-sm text-gray-500">
-                <p>For more information, please contact Sandakan Veterinar Department</p>
+            <div class="mt-8 text-center text-sm text-gray-500 no-print">
+                <p>For more information, please contact Department of Veterinary Services Sabah</p>
             </div>
         </div>
     </div>
