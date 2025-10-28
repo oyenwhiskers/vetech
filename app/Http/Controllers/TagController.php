@@ -149,26 +149,31 @@ class TagController extends Controller
         if (!$tag->qr_code_path) {
             return redirect()->back()->with('error', 'QR Code not found.');
         }
-
-        // Check if it's an external URL (API-generated QR code)
+    
+        // Handle external QR code URLs
         if (Str::startsWith($tag->qr_code_path, ['http://', 'https://'])) {
-            // Fetch the QR code image from the external URL
-            $imageContent = @file_get_contents($tag->qr_code_path);
-            
-            if ($imageContent === false) {
+    
+            $ch = curl_init($tag->qr_code_path);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            $imageContent = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+    
+            if ($imageContent === false || $httpCode !== 200) {
                 return redirect()->back()->with('error', 'Unable to download QR Code.');
             }
-            
+    
             return response($imageContent)
                 ->header('Content-Type', 'image/png')
-                ->header('Content-Disposition', 'attachment; filename="' . $tag->tag_code . '.png"');
+                ->header('Content-Disposition', 'attachment; filename="'.$tag->tag_code.'.png"');
         }
-        
-        // For local storage files (if any exist)
+    
+        // Local storage fallback
         if (!Storage::disk('public')->exists($tag->qr_code_path)) {
             return redirect()->back()->with('error', 'QR Code not found.');
         }
-
-        return Storage::disk('public')->download($tag->qr_code_path, $tag->tag_code . '.png');
+    
+        return Storage::disk('public')->download($tag->qr_code_path, $tag->tag_code.'.png');
     }
 }
