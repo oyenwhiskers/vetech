@@ -47,6 +47,24 @@
                     @enderror
                 </div>
 
+                <!-- Treated By -->
+                <div>
+                    <label for="treated_by" class="block text-sm font-medium text-gray-700 mb-1">
+                        Treated By
+                    </label>
+                    <input 
+                        type="text" 
+                        id="treated_by" 
+                        name="treated_by" 
+                        value="{{ old('treated_by', Auth::user()->name) }}"
+                        placeholder="e.g., Dr. Smith, Dr. Johnson"
+                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
+                    />
+                    @error('treated_by')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Disease -->
                 <div>
                     <label for="disease" class="block text-sm font-medium text-gray-700 mb-1">

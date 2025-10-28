@@ -4,7 +4,7 @@
 @section('header', 'Manage Tags & QR Codes')
 
 @section('content')
-<div x-data="{ viewMode: 'card' }">
+<div x-data="{ viewMode: '{{ request('view', 'card') }}' }">
 <!-- Header Section -->
 <div class="mb-8">
     <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-8 text-white">
@@ -20,13 +20,13 @@
             <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <!-- View Toggle -->
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg p-1 flex gap-1">
-                    <button @click="viewMode = 'card'" 
+                    <button type="button" @click="viewMode = 'card'" 
                             :class="viewMode === 'card' ? 'bg-white text-blue-600' : 'text-white hover:bg-white/10'"
                             class="px-4 py-2 rounded-md transition-all font-medium flex items-center">
                         <i class="fas fa-th-large mr-2"></i>
                         <span class="hidden sm:inline">Card</span>
                     </button>
-                    <button @click="viewMode = 'list'" 
+                    <button type="button" @click="viewMode = 'list'" 
                             :class="viewMode === 'list' ? 'bg-white text-blue-600' : 'text-white hover:bg-white/10'"
                             class="px-4 py-2 rounded-md transition-all font-medium flex items-center">
                         <i class="fas fa-list mr-2"></i>
@@ -40,6 +40,90 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="mb-6 bg-white rounded-xl shadow-md p-6">
+    <form method="GET" action="{{ route('tags.index') }}">
+        <input type="hidden" name="view" :value="viewMode">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+            <!-- Search Bar -->
+            <div class="lg:col-span-5">
+                <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-search mr-2"></i>Search
+                </label>
+                <input type="text" 
+                       id="search" 
+                       name="search" 
+                       value="{{ request('search') }}"
+                       placeholder="Search by tag code, pet name, or owner..." 
+                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+            </div>
+
+            <!-- Status Filter -->
+            <div class="lg:col-span-2">
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-info-circle mr-2"></i>Status
+                </label>
+                <select id="status" 
+                        name="status" 
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <option value="">All Status</option>
+                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="lost" {{ request('status') == 'lost' ? 'selected' : '' }}>Lost</option>
+                </select>
+            </div>
+
+            <!-- Assignment Filter -->
+            <div class="lg:col-span-2">
+                <label for="assignment" class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-tag mr-2"></i>Assignment
+                </label>
+                <select id="assignment" 
+                        name="assignment" 
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <option value="">All Tags</option>
+                    <option value="assigned" {{ request('assignment') == 'assigned' ? 'selected' : '' }}>Assigned</option>
+                    <option value="unassigned" {{ request('assignment') == 'unassigned' ? 'selected' : '' }}>Unassigned</option>
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="lg:col-span-3 flex gap-2">
+                <button type="submit" 
+                        class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center">
+                    <i class="fas fa-filter mr-2"></i>
+                    <span class="hidden sm:inline">Apply</span>
+                </button>
+                <a href="{{ route('tags.index') }}" 
+                   class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-4 py-2.5 rounded-lg transition-all flex items-center justify-center">
+                    <i class="fas fa-times mr-2"></i>
+                    <span class="hidden sm:inline">Clear</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Active Filters Indicator -->
+        @if(request()->hasAny(['search', 'status', 'assignment']))
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="flex items-center text-sm text-gray-600">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <span>Filters active: 
+                        @if(request('search'))
+                            <span class="font-semibold">Search</span>@if(request('status') || request('assignment')),@endif
+                        @endif
+                        @if(request('status'))
+                            <span class="font-semibold">Status ({{ ucfirst(request('status')) }})</span>@if(request('assignment')),@endif
+                        @endif
+                        @if(request('assignment'))
+                            <span class="font-semibold">Assignment ({{ ucfirst(request('assignment')) }})</span>
+                        @endif
+                    </span>
+                </div>
+            </div>
+        @endif
+    </form>
 </div>
 
 <!-- Tags Grid (Card View) -->

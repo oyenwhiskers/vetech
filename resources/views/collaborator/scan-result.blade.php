@@ -86,15 +86,21 @@
                                 <p class="text-xs sm:text-sm text-gray-600"><span class="font-medium">Diagnosis:</span> {{ $treatment->diagnosis }}</p>
                             </div>
                             <div class="text-left sm:text-right text-xs sm:text-sm text-gray-600">
-                                <p class="font-medium">{{ $treatment->user->name }}</p>
+                                <p class="font-medium">{{ $treatment->treated_by ?? $treatment->user->name }}</p>
                                 @if($treatment->collaborator)
                                     <p class="text-xs">{{ $treatment->collaborator->clinic_name }}</p>
+                                @endif
+                                @if($treatment->treated_by && $treatment->treated_by !== $treatment->user->name)
+                                    <p class="text-xs text-gray-500">Record by: {{ $treatment->user->name }}</p>
                                 @endif
                             </div>
                         </div>
                         
                         <div class="text-xs sm:text-sm text-gray-700 mt-2 space-y-1">
                             <p><span class="font-medium">Treatment:</span> {{ $treatment->treatment_given }}</p>
+                            @if($treatment->treated_by)
+                                <p><span class="font-medium">Treated By:</span> {{ $treatment->treated_by }}</p>
+                            @endif
                             @if($treatment->medication)
                                 <p><span class="font-medium">Medication:</span> {{ $treatment->medication }}</p>
                             @endif

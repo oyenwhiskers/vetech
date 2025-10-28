@@ -15,6 +15,7 @@ class Treatment extends Model
         'pet_id',
         'user_id',
         'collaborator_id',
+        'treated_by',
         'treatment_date',
         'disease',
         'diagnosis',

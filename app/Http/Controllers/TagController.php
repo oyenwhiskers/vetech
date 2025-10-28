@@ -12,9 +12,39 @@ use Illuminate\Support\Facades\Storage;
 
 class TagController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tags = Tag::with('pet.customer')->latest()->paginate(15);
+        $query = Tag::with('pet.customer');
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('tag_code', 'like', "%{$search}%")
+                  ->orWhereHas('pet', function($petQuery) use ($search) {
+                      $petQuery->where('name', 'like', "%{$search}%")
+                               ->orWhereHas('customer', function($customerQuery) use ($search) {
+                                   $customerQuery->where('name', 'like', "%{$search}%");
+                               });
+                  });
+            });
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Assignment filter (assigned/unassigned)
+        if ($request->filled('assignment')) {
+            if ($request->assignment === 'assigned') {
+                $query->whereNotNull('pet_id');
+            } elseif ($request->assignment === 'unassigned') {
+                $query->whereNull('pet_id');
+            }
+        }
+
+        $tags = $query->latest()->paginate(15)->withQueryString();
         return view('tags.index', compact('tags'));
     }
 

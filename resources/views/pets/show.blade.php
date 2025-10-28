@@ -127,6 +127,9 @@
                                 @if($treatment->medication)
                                     <div class="text-sm"><strong>Medication:</strong> {{ $treatment->medication }}</div>
                                 @endif
+                                @if($treatment->treated_by)
+                                    <div class="text-sm"><strong>Treated By:</strong> {{ $treatment->treated_by }}</div>
+                                @endif
                                 @if($treatment->cost)
                                     <div class="text-sm"><strong>Cost:</strong> RM {{ number_format($treatment->cost, 2) }}</div>
                                 @endif
@@ -162,6 +165,12 @@
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700">Treated By</label>
+                    <input type="text" name="treated_by" value="{{ Auth::user()->name }}"
+                        placeholder="e.g., Dr. Smith, Dr. Johnson"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700">Disease (if any)</label>
                     <input type="text" name="disease"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
@@ -181,6 +190,7 @@
                     <textarea name="medication" rows="2"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea>
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Cost (RM)</label>
                     <input type="number" name="cost" step="0.01" min="0"

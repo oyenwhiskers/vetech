@@ -111,7 +111,7 @@
                                 {{ $tag->pet->customer->name }}
                             </a>
                             <p class="text-sm text-gray-600">
-                                <i class="fas fa-phone mr-1"></i>{{ $tag->pet->customer->contact_number ?? '-' }}
+                                <i class="fas fa-phone mr-1"></i>{{ $tag->pet->customer->phone ?? '-' }}
                             </p>
                         @else
                             <p class="text-gray-400 text-lg">-</p>

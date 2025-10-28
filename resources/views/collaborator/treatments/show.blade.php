@@ -112,7 +112,7 @@
                 <dl class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div>
                         <dt class="font-medium text-gray-600">Treated By</dt>
-                        <dd class="text-gray-900 mt-1">{{ $treatment->user->name }}</dd>
+                        <dd class="text-gray-900 mt-1">{{ $treatment->treated_by ?? $treatment->user->name }}</dd>
                     </div>
                     <div>
                         <dt class="font-medium text-gray-600">Location</dt>
@@ -124,8 +124,11 @@
                         </dd>
                     </div>
                     <div>
-                        <dt class="font-medium text-gray-600">Record Created</dt>
-                        <dd class="text-gray-900 mt-1">{{ $treatment->created_at->format('M d, Y H:i') }}</dd>
+                        <dt class="font-medium text-gray-600">Record Created By</dt>
+                        <dd class="text-gray-900 mt-1">
+                            {{ $treatment->user->name }}
+                            <br><span class="text-xs text-gray-600">{{ $treatment->created_at->format('M d, Y H:i') }}</span>
+                        </dd>
                     </div>
                 </dl>
             </div>
