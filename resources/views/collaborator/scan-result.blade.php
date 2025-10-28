@@ -32,7 +32,7 @@
             <div>
                 <h4 class="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Pet Information</h4>
                 <dl class="space-y-1 text-xs sm:text-sm">
-                    <div><dt class="inline font-medium">Gender:</dt> <dd class="inline">{{ ucfirst($tag->pet->gender) }}</dd></div>
+                    <div><dt class="inline font-medium">Gender:</dt> <dd class="inline"><i class="fas fa-{{ strtolower($tag->pet->gender) == 'male' ? 'mars' : (strtolower($tag->pet->gender) == 'female' ? 'venus' : 'venus-mars') }} mr-1"></i>{{ ucfirst($tag->pet->gender) }}</dd></div>
                     @if($tag->pet->age)
                         <div><dt class="inline font-medium">Age:</dt> <dd class="inline">{{ $tag->pet->age }} years</dd></div>
                     @endif

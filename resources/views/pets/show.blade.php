@@ -46,7 +46,7 @@
                     <span>{{ $pet->species }} / {{ $pet->breed ?: 'N/A' }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="fas fa-venus-mars text-gray-500"></i>
+                    <i class="fas fa-{{ strtolower($pet->gender) == 'male' ? 'mars' : (strtolower($pet->gender) == 'female' ? 'venus' : 'venus-mars') }} text-gray-500"></i>
                     <span>{{ ucfirst($pet->gender) }}</span>
                 </div>
                 @if($pet->age)

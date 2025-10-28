@@ -202,7 +202,7 @@
                                                         <span x-text="pet.species + ' - ' + (pet.breed || 'Unknown breed')"></span>
                                                     </p>
                                                     <p class="text-sm text-gray-700 flex items-center gap-1" x-show="pet.gender">
-                                                        <i class="fas fa-venus-mars text-gray-500"></i>
+                                                        <i class="fas text-gray-500" :class="pet.gender && pet.gender.toLowerCase() == 'male' ? 'fa-mars' : (pet.gender && pet.gender.toLowerCase() == 'female' ? 'fa-venus' : 'fa-venus-mars')"></i>
                                                         <span x-text="pet.gender ? pet.gender.charAt(0).toUpperCase() + pet.gender.slice(1) : ''"></span>
                                                     </p>
                                                     <p class="text-sm text-gray-700 flex items-center gap-1" x-show="pet.age">

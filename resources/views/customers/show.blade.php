@@ -64,7 +64,7 @@
                                     <h4 class="font-semibold text-lg">{{ $pet->name }}</h4>
                                     <p class="text-sm text-gray-600">{{ $pet->species }} - {{ $pet->breed }}</p>
                                     <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600">
-                                        <span><i class="fas fa-venus-mars mr-1"></i>{{ ucfirst($pet->gender) }}</span>
+                                        <span><i class="fas fa-{{ strtolower($pet->gender) == 'male' ? 'mars' : (strtolower($pet->gender) == 'female' ? 'venus' : 'venus-mars') }} mr-1"></i>{{ ucfirst($pet->gender) }}</span>
                                         @if($pet->age)
                                             <span><i class="fas fa-hourglass-half mr-1"></i>{{ $pet->age }} years old</span>
                                         @endif
