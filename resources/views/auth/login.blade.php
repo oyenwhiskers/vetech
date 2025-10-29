@@ -50,12 +50,18 @@
                     <i class="fas fa-lock text-gray-400"></i>
                 </div>
                 <x-text-input id="password" 
-                    class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    class="block w-full pl-10 pr-12 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                     type="password"
                     name="password"
                     required 
                     autocomplete="current-password"
                     placeholder="••••••••" />
+                <button type="button" 
+                    id="togglePassword" 
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                    onclick="togglePasswordVisibility()">
+                    <i id="passwordIcon" class="fas fa-eye"></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
@@ -98,4 +104,21 @@
             Create Collaborator Account
         </a>
     </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = document.getElementById('passwordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </x-guest-layout>
