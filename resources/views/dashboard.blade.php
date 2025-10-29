@@ -117,7 +117,15 @@
         <div class="space-y-3">
             @foreach($bookingStatusStats as $stat)
                 @php
-                    $percentage = $totalCustomers > 0 ? ($stat->count / Booking::count() * 100) : 0;
+                    try {
+                        $bookingTotal = \App\Models\Booking::count();
+                        $percentage = $bookingTotal > 0 ? ($stat->count / $bookingTotal * 100) : 0;
+                    } catch (\Throwable $e) {
+                        $percentage = 0;
+                        echo '<div style="background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px;margin-bottom:10px;">
+                                <strong>Debug:</strong> ' . e($e->getMessage()) . '
+                              </div>';
+                    }
                     $colors = [
                         'pending' => ['bg' => 'bg-yellow-500', 'text' => 'text-yellow-700'],
                         'confirmed' => ['bg' => 'bg-blue-500', 'text' => 'text-blue-700'],

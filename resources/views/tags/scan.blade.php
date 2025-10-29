@@ -73,7 +73,7 @@
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">Gender</p>
-                        <p><i class="fas fa-{{ strtolower($tag->pet->gender) == 'male' ? 'mars' : (strtolower($tag->pet->gender) == 'female' ? 'venus' : 'venus-mars') }} mr-1"></i>{{ ucfirst($tag->pet->gender) }}</p>
+                        <p>{{ ucfirst($tag->pet->gender) }}</p>
                     </div>
                     @if($tag->pet->age)
                     <div>

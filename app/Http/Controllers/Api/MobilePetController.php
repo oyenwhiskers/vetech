@@ -18,43 +18,56 @@ class MobilePetController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        
-        if (!$user->customer_id) {
+        try {
+            $user = $request->user();
+            
+            if (!$user->customer_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Customer profile not found'
+                ], 404);
+            }
+
+            $pets = Pet::where('customer_id', $user->customer_id)
+                       ->with(['tag'])
+                       ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $pets->map(function ($pet) {
+                    $firstTag = $pet->tag;
+                    
+                    return [
+                        'id' => $pet->id,
+                        'name' => $pet->name,
+                        'species' => $pet->species,
+                        'breed' => $pet->breed,
+                        'age' => $pet->age,
+                        'gender' => $pet->gender,
+                        'color' => $pet->color,
+                        'weight' => $pet->weight,
+                        'microchip_id' => $pet->microchip_id,
+                        'medical_notes' => $pet->medical_notes,
+                        'tag' => $firstTag ? [
+                            'id' => $firstTag->id,
+                            'tag_code' => $firstTag->tag_code,
+                            'status' => $firstTag->status,
+                            'qr_code_url' => $firstTag->qr_code_path ?? $firstTag->qr_code_url ?? null,
+                        ] : null,
+                        'created_at' => $pet->created_at,
+                    ];
+                })
+            ], 200);
+            
+        } catch (\Exception $e) {
+            \Log::error('Pet index error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Customer profile not found'
-            ], 404);
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
         }
-
-        $pets = Pet::where('customer_id', $user->customer_id)
-                   ->with(['tags'])
-                   ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $pets->map(function ($pet) {
-                return [
-                    'id' => $pet->id,
-                    'name' => $pet->name,
-                    'species' => $pet->species,
-                    'breed' => $pet->breed,
-                    'age' => $pet->age,
-                    'gender' => $pet->gender,
-                    'color' => $pet->color,
-                    'weight' => $pet->weight,
-                    'microchip_id' => $pet->microchip_id,
-                    'medical_notes' => $pet->medical_notes,
-                    'tag' => $pet->tags->first() ? [
-                        'id' => $pet->tags->first()->id,
-                        'tag_code' => $pet->tags->first()->tag_code,
-                        'status' => $pet->tags->first()->status,
-                        'qr_code_url' => $pet->tags->first()->qr_code_path,
-                    ] : null,
-                    'created_at' => $pet->created_at,
-                ];
-            })
-        ], 200);
     }
 
     /**
@@ -143,47 +156,58 @@ class MobilePetController extends Controller
      */
     public function show(Request $request, Pet $pet)
     {
-        $user = $request->user();
-        
-        // Verify pet belongs to customer
-        if ($pet->customer_id !== $user->customer_id) {
+        try {
+            $user = $request->user();
+            
+            // Verify pet belongs to customer
+            if ($pet->customer_id !== $user->customer_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pet not found'
+                ], 404);
+            }
+
+            $pet->load(['tag', 'customer']);
+            $firstTag = $pet->tag;
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $pet->id,
+                    'name' => $pet->name,
+                    'species' => $pet->species,
+                    'breed' => $pet->breed,
+                    'age' => $pet->age,
+                    'gender' => $pet->gender,
+                    'color' => $pet->color,
+                    'weight' => $pet->weight,
+                    'microchip_id' => $pet->microchip_id,
+                    'medical_notes' => $pet->medical_notes,
+                    'tag' => $firstTag ? [
+                        'id' => $firstTag->id,
+                        'tag_code' => $firstTag->tag_code,
+                        'status' => $firstTag->status,
+                        'qr_code_url' => $firstTag->qr_code_path ?? $firstTag->qr_code_url ?? null,
+                        'issued_date' => $firstTag->issued_date,
+                    ] : null,
+                    'owner' => [
+                        'id' => $pet->customer->id,
+                        'name' => $pet->customer->name,
+                        'phone' => $pet->customer->phone,
+                    ],
+                    'created_at' => $pet->created_at,
+                    'updated_at' => $pet->updated_at,
+                ]
+            ], 200);
+            
+        } catch (\Exception $e) {
+            \Log::error('Pet show error: ' . $e->getMessage());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Pet not found'
-            ], 404);
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
         }
-
-        $pet->load(['tags', 'customer']);
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => $pet->id,
-                'name' => $pet->name,
-                'species' => $pet->species,
-                'breed' => $pet->breed,
-                'age' => $pet->age,
-                'gender' => $pet->gender,
-                'color' => $pet->color,
-                'weight' => $pet->weight,
-                'microchip_id' => $pet->microchip_id,
-                'medical_notes' => $pet->medical_notes,
-                'tag' => $pet->tags->first() ? [
-                    'id' => $pet->tags->first()->id,
-                    'tag_code' => $pet->tags->first()->tag_code,
-                    'status' => $pet->tags->first()->status,
-                    'qr_code_url' => $pet->tags->first()->qr_code_path,
-                    'issued_date' => $pet->tags->first()->issued_date,
-                ] : null,
-                'owner' => [
-                    'id' => $pet->customer->id,
-                    'name' => $pet->customer->name,
-                    'phone' => $pet->customer->phone,
-                ],
-                'created_at' => $pet->created_at,
-                'updated_at' => $pet->updated_at,
-            ]
-        ], 200);
     }
 
     /**
@@ -306,68 +330,68 @@ class MobilePetController extends Controller
      */
     public function scanAndAssignTag(Request $request)
     {
-        $user = $request->user();
-        
-        if (!$user->customer_id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Customer profile not found'
-            ], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'tag_code' => 'required|string',
-            'pet_id' => 'required|exists:pets,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Verify pet belongs to customer
-        $pet = Pet::find($request->pet_id);
-        if ($pet->customer_id !== $user->customer_id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You can only assign tags to your own pets'
-            ], 403);
-        }
-
-        // Find tag by code
-        $tag = Tag::where('tag_code', $request->tag_code)->first();
-        
-        if (!$tag) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid tag code'
-            ], 404);
-        }
-
-        // Check if tag is already assigned
-        if ($tag->pet_id && $tag->pet_id !== $pet->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This tag is already assigned to another pet'
-            ], 422);
-        }
-
-        // Check if tag is active
-        if ($tag->status !== 'active') {
-            return response()->json([
-                'success' => false,
-                'message' => 'This tag is not active'
-            ], 422);
-        }
-
         try {
+            $user = $request->user();
+            
+            if (!$user->customer_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Customer profile not found'
+                ], 404);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'tag_code' => 'required|string',
+                'pet_id' => 'required|exists:pets,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Verify pet belongs to customer
+            $pet = Pet::find($request->pet_id);
+            if ($pet->customer_id !== $user->customer_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You can only assign tags to your own pets'
+                ], 403);
+            }
+
+            // Find tag by code
+            $tag = Tag::where('tag_code', $request->tag_code)->first();
+            
+            if (!$tag) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid tag code'
+                ], 404);
+            }
+
+            // Check if tag is already assigned
+            if ($tag->pet_id && $tag->pet_id !== $pet->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This tag is already assigned to another pet'
+                ], 422);
+            }
+
+            // Check if tag is active
+            if ($tag->status !== 'active') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This tag is not active'
+                ], 422);
+            }
+
             // Assign tag to pet
             $tag->update(['pet_id' => $pet->id]);
 
-            $pet->load(['tags']);
+            $pet->load(['tag']);
 
             return response()->json([
                 'success' => true,
@@ -382,13 +406,15 @@ class MobilePetController extends Controller
                         'id' => $tag->id,
                         'tag_code' => $tag->tag_code,
                         'status' => $tag->status,
-                        'qr_code_url' => $tag->qr_code_path,
+                        'qr_code_url' => $tag->qr_code_path ?? $tag->qr_code_url ?? null,
                         'issued_date' => $tag->issued_date,
                     ]
                 ]
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error('Tag assignment error: ' . $e->getMessage());
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to assign tag: ' . $e->getMessage()
@@ -477,6 +503,63 @@ class MobilePetController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Release/unassign tag from pet.
+     * 
+     * @param Request $request
+     * @param Pet $pet
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function releaseTag(Request $request, Pet $pet)
+    {
+        try {
+            $user = $request->user();
+            
+            // Verify pet belongs to customer
+            if ($pet->customer_id !== $user->customer_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pet not found'
+                ], 404);
+            }
+
+            // Get the tag before releasing
+            $tag = $pet->tag;
+            
+            if (!$tag) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No tag assigned to this pet'
+                ], 400);
+            }
+
+            // Clear the pet_id from the tag to unassign it
+            $tag->update(['pet_id' => null]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tag released successfully',
+                'data' => [
+                    'pet' => [
+                        'id' => $pet->id,
+                        'name' => $pet->name,
+                        'species' => $pet->species,
+                    ],
+                    'released_tag_code' => $tag->tag_code,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Tag release error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to release tag: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     /**
      * Get medical treatment records for a pet.

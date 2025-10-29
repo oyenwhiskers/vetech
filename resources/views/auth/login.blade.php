@@ -1,8 +1,9 @@
 <x-guest-layout>
     <!-- Header -->
     <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
-        <p class="text-gray-600">Log in to your VETech account</p>
+        <img src="{{ asset('images/vetech_logo2.png') }}" alt="VETech Logo" class="w-lg h-lg mx-auto ">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">VETech</h1>
+        <p class="text-gray-600">DVS Sandakan Veterinary System</p>
     </div>
 
     <!-- Session Status -->

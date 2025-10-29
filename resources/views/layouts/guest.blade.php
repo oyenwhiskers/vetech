@@ -18,13 +18,10 @@
     <body class="font-sans antialiased bg-gradient-to-br from-[#c1eaf7] via-[#a8dff0] to-[#8fd3e6] min-h-screen">
     <div class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
             <!-- Brand with Modern Icon -->
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-2xl mb-4 transform hover:scale-110 transition-transform">
-                    <i class="fas fa-paw text-white text-4xl"></i>
-                </div>
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2">VETech</h1>
-                <p class="text-gray-600 text-sm md:text-base">DVS Sandakan Veterinary System</p>
-            </div>
+            <!--<div class="text-center mb-8">-->
+            <!--    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-2">VETech</h1>-->
+            <!--    <p class="text-gray-600 text-sm md:text-base">DVS Sandakan Veterinary System</p>-->
+            <!--</div>-->
 
             <!-- Auth Card -->
             <div class="w-full sm:max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">

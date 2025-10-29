@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class MobileBookingController extends Controller
 {
@@ -26,12 +27,23 @@ class MobileBookingController extends Controller
             ], 404);
         }
 
-        $status = $request->query('status'); // upcoming, completed, cancelled
+    $status = $request->query('status'); // pending, confirmed, completed, cancelled
+    $petId = $request->query('pet_id'); // optional filter by pet
+    $date = $request->query('date'); // optional filter by specific date (YYYY-MM-DD)
+
         $query = Booking::where('customer_id', $user->customer_id)
                        ->with(['pet']);
 
         if ($status) {
             $query->where('status', $status);
+        }
+
+        if ($petId) {
+            $query->where('pet_id', $petId);
+        }
+
+        if ($date) {
+            $query->whereDate('booking_date', $date);
         }
 
         $bookings = $query->orderBy('booking_date', 'desc')
@@ -41,20 +53,7 @@ class MobileBookingController extends Controller
         return response()->json([
             'success' => true,
             'data' => $bookings->map(function ($booking) {
-                return [
-                    'id' => $booking->id,
-                    'pet' => $booking->pet ? [
-                        'id' => $booking->pet->id,
-                        'name' => $booking->pet->name,
-                        'species' => $booking->pet->species,
-                    ] : null,
-                    'booking_date' => $booking->booking_date,
-                    'booking_time' => $booking->booking_time,
-                    'service_type' => $booking->service_type,
-                    'status' => $booking->status,
-                    'notes' => $booking->notes,
-                    'created_at' => $booking->created_at,
-                ];
+                return $this->formatBooking($booking);
             })
         ], 200);
     }
@@ -108,7 +107,7 @@ class MobileBookingController extends Controller
                 'booking_date' => $request->booking_date,
                 'booking_time' => $request->booking_time,
                 'service_type' => $request->service_type,
-                'status' => 'upcoming',
+                'status' => 'pending',
                 'notes' => $request->notes,
             ]);
 
@@ -117,20 +116,7 @@ class MobileBookingController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Booking created successfully',
-                'data' => [
-                    'id' => $booking->id,
-                    'pet' => [
-                        'id' => $booking->pet->id,
-                        'name' => $booking->pet->name,
-                        'species' => $booking->pet->species,
-                    ],
-                    'booking_date' => $booking->booking_date,
-                    'booking_time' => $booking->booking_time,
-                    'service_type' => $booking->service_type,
-                    'status' => $booking->status,
-                    'notes' => $booking->notes,
-                    'created_at' => $booking->created_at,
-                ]
+                'data' => $this->formatBooking($booking),
             ], 201);
 
         } catch (\Exception $e) {
@@ -164,23 +150,7 @@ class MobileBookingController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'id' => $booking->id,
-                'pet' => $booking->pet ? [
-                    'id' => $booking->pet->id,
-                    'name' => $booking->pet->name,
-                    'species' => $booking->pet->species,
-                    'breed' => $booking->pet->breed,
-                    'age' => $booking->pet->age,
-                ] : null,
-                'booking_date' => $booking->booking_date,
-                'booking_time' => $booking->booking_time,
-                'service_type' => $booking->service_type,
-                'status' => $booking->status,
-                'notes' => $booking->notes,
-                'created_at' => $booking->created_at,
-                'updated_at' => $booking->updated_at,
-            ]
+            'data' => $this->formatBooking($booking),
         ], 200);
     }
 
@@ -203,11 +173,11 @@ class MobileBookingController extends Controller
             ], 404);
         }
 
-        // Only allow updating upcoming bookings
-        if ($booking->status !== 'upcoming') {
+        // Only allow updating pending bookings
+        if ($booking->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only upcoming bookings can be updated'
+                'message' => 'Only pending bookings can be updated'
             ], 422);
         }
 
@@ -239,18 +209,7 @@ class MobileBookingController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Booking updated successfully',
-                'data' => [
-                    'id' => $booking->id,
-                    'pet' => [
-                        'id' => $booking->pet->id,
-                        'name' => $booking->pet->name,
-                    ],
-                    'booking_date' => $booking->booking_date,
-                    'booking_time' => $booking->booking_time,
-                    'service_type' => $booking->service_type,
-                    'status' => $booking->status,
-                    'notes' => $booking->notes,
-                ]
+                'data' => $this->formatBooking($booking),
             ], 200);
 
         } catch (\Exception $e) {
@@ -259,6 +218,47 @@ class MobileBookingController extends Controller
                 'message' => 'Failed to update booking: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Normalize booking payload to fixed formats:
+     * booking_date -> YYYY-MM-DD, booking_time -> HH:mm (no timezone drift)
+     */
+    private function formatBooking(Booking $booking): array
+    {
+        $pet = $booking->pet;
+
+        // Normalize date to Y-m-d
+        $date = $booking->booking_date ? Carbon::parse($booking->booking_date)->toDateString() : null;
+
+        // Normalize time to H:i (keep the exact time set, avoid timezone conversions)
+        $time = null;
+        if ($booking->booking_time) {
+            try {
+                $time = Carbon::parse($booking->booking_time)->format('H:i');
+            } catch (\Throwable $e) {
+                // If parsing fails, fallback to raw string
+                $time = (string) $booking->booking_time;
+            }
+        }
+
+        return [
+            'id' => $booking->id,
+            'pet' => $pet ? [
+                'id' => $pet->id,
+                'name' => $pet->name,
+                'species' => $pet->species,
+                'breed' => $pet->breed ?? null,
+                'age' => $pet->age ?? null,
+            ] : null,
+            'booking_date' => $date,
+            'booking_time' => $time,
+            'service_type' => $booking->service_type,
+            'status' => $booking->status,
+            'notes' => $booking->notes,
+            'created_at' => $booking->created_at,
+            'updated_at' => $booking->updated_at,
+        ];
     }
 
     /**
@@ -280,11 +280,11 @@ class MobileBookingController extends Controller
             ], 404);
         }
 
-        // Only allow cancelling upcoming bookings
-        if ($booking->status !== 'upcoming') {
+        // Only allow cancelling pending bookings
+        if ($booking->status !== 'pending') {
             return response()->json([
                 'success' => false,
-                'message' => 'Only upcoming bookings can be cancelled'
+                'message' => 'Only pending bookings can be cancelled'
             ], 422);
         }
 
