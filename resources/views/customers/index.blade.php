@@ -144,6 +144,21 @@
                 <!-- Modal Body -->
                 <div class="p-6">
                     <!-- Customer Details Grid -->
+
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                            <i class="fas fa-user-circle mr-1"></i>Profile Image
+                        </p>
+                        <div class="flex justify-center items-center">
+                            <img :src="selected && selected.profile_image
+                                ? (selected.profile_image.startsWith('http') || selected.profile_image.startsWith('/storage/')
+                                    ? selected.profile_image
+                                    : ('{{ asset('storage') }}' + '/' + (selected.profile_image || '').replace(/^\/?storage\//,'').replace(/^\//,'')))
+                                : 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'"
+                                alt="Customer Profile Image" class="w-24 h-24 rounded-full object-cover">
+                        </div>
+                    </div>
+                    <br>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <p class="text-xs font-semibold text-gray-500 uppercase mb-1">

@@ -13,6 +13,7 @@ class Customer extends Model
 
     protected $fillable = [
         'name',
+        'profile_image',
         'email',
         'phone',
         'address',

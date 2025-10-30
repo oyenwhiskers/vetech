@@ -22,6 +22,7 @@ class Pet extends Model
         'color',
         'weight',
         'special_notes',
+        'pet_image',
     ];
 
     protected $casts = [

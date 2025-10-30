@@ -20,6 +20,12 @@
                     <i class="fas fa-edit"></i>
                 </a>
             </div>
+
+            <div class="mb-4">
+                <p class="text-sm text-gray-500">Profile Image</p>
+                <img src="{{ $customer->profile_image ? asset('storage/' . $customer->profile_image) : 'https://via.placeholder.com/150' }}" alt="Customer Profile Image" class="w-24 h-24 rounded-full object-cover">
+            </div>
+            
             <div class="space-y-3">
                 <div>
                     <p class="text-sm text-gray-500">Name</p>

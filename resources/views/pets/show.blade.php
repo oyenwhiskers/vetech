@@ -32,6 +32,25 @@
                     </form>
                 </div>
             </div>
+            <div class="mb-4 flex justify-center items-center">
+                <?php
+                $placeholder = 'https://www.animalfocusvet.com/wp-content/uploads/sites/272/2023/01/Placeholder-23.png';
+                $raw = $pet->pet_image ?? null;
+                if ($raw) {
+                    $isHttp = preg_match('#^https?://#i', $raw) === 1;
+                    $isStorageUrl = strpos($raw, '/storage/') === 0;
+                    if ($isHttp || $isStorageUrl) {
+                        $imgSrc = $raw;
+                    } else {
+                        $normalized = ltrim(preg_replace('#^/?storage/#', '', $raw), '/');
+                        $imgSrc = asset('storage/' . $normalized);
+                    }
+                } else {
+                    $imgSrc = $placeholder;
+                }
+                ?>
+                <img src="{{ $imgSrc }}" alt="Pet Image" class="w-40 h-40 rounded-xl object-cover border" />
+            </div>
             <div class="flex flex-col gap-2 text-gray-800">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-dog text-[#334da1]"></i>

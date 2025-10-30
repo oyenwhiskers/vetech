@@ -7,6 +7,7 @@ use App\Models\Pet;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class MobilePetController extends Controller
 {
@@ -36,10 +37,16 @@ class MobilePetController extends Controller
                 'success' => true,
                 'data' => $pets->map(function ($pet) {
                     $firstTag = $pet->tag;
+                    $petImage = $pet->pet_image
+                        ? (str_starts_with($pet->pet_image, 'http') || str_starts_with($pet->pet_image, '/storage/')
+                            ? $pet->pet_image
+                            : Storage::url(ltrim(str_replace('/storage/', '', parse_url($pet->pet_image, PHP_URL_PATH) ?? $pet->pet_image), '/')))
+                        : null;
                     
                     return [
                         'id' => $pet->id,
                         'name' => $pet->name,
+                        'pet_image' => $petImage,
                         'species' => $pet->species,
                         'breed' => $pet->breed,
                         'age' => $pet->age,
@@ -97,6 +104,7 @@ class MobilePetController extends Controller
             'weight' => 'nullable|numeric|min:0',
             'microchip_id' => 'nullable|string|max:255',
             'medical_notes' => 'nullable|string|max:1000',
+            'pet_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -108,6 +116,11 @@ class MobilePetController extends Controller
         }
 
         try {
+            if ($request->hasFile('pet_image')) {
+                $imagePath = $request->file('pet_image')->store('pet_images', 'public');
+                $petImage = $imagePath; // store path only
+            }
+
             $pet = Pet::create([
                 'customer_id' => $user->customer_id,
                 'name' => $request->name,
@@ -119,6 +132,7 @@ class MobilePetController extends Controller
                 'weight' => $request->weight,
                 'microchip_id' => $request->microchip_id,
                 'medical_notes' => $request->medical_notes,
+                'pet_image' => $petImage ?? null,
             ]);
 
             return response()->json([
@@ -135,6 +149,11 @@ class MobilePetController extends Controller
                     'weight' => $pet->weight,
                     'microchip_id' => $pet->microchip_id,
                     'medical_notes' => $pet->medical_notes,
+                    'pet_image' => $pet->pet_image
+                        ? (str_starts_with($pet->pet_image, 'http') || str_starts_with($pet->pet_image, '/storage/')
+                            ? $pet->pet_image
+                            : Storage::url(ltrim(str_replace('/storage/', '', parse_url($pet->pet_image, PHP_URL_PATH) ?? $pet->pet_image), '/')))
+                        : null,
                     'created_at' => $pet->created_at,
                 ]
             ], 201);
@@ -175,6 +194,11 @@ class MobilePetController extends Controller
                 'data' => [
                     'id' => $pet->id,
                     'name' => $pet->name,
+                    'pet_image' => $pet->pet_image
+                        ? (str_starts_with($pet->pet_image, 'http') || str_starts_with($pet->pet_image, '/storage/')
+                            ? $pet->pet_image
+                            : Storage::url(ltrim(str_replace('/storage/', '', parse_url($pet->pet_image, PHP_URL_PATH) ?? $pet->pet_image), '/')))
+                        : null,
                     'species' => $pet->species,
                     'breed' => $pet->breed,
                     'age' => $pet->age,
@@ -239,6 +263,8 @@ class MobilePetController extends Controller
             'weight' => 'nullable|numeric|min:0',
             'microchip_id' => 'nullable|string|max:255',
             'medical_notes' => 'nullable|string|max:1000',
+            'pet_image' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'remove_pet_image' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -250,7 +276,7 @@ class MobilePetController extends Controller
         }
 
         try {
-            $pet->update($request->only([
+            $updateData = $request->only([
                 'name',
                 'species',
                 'breed',
@@ -260,7 +286,28 @@ class MobilePetController extends Controller
                 'weight',
                 'microchip_id',
                 'medical_notes',
-            ]));
+            ]);
+
+            if ($request->boolean('remove_pet_image')) {
+                $existing = $pet->pet_image;
+                if ($existing) {
+                    $existingPath = ltrim(str_replace('/storage/', '', parse_url($existing, PHP_URL_PATH) ?? $existing), '/');
+                    Storage::disk('public')->delete($existingPath);
+                }
+                $updateData['pet_image'] = null;
+            }
+
+            if ($request->hasFile('pet_image')) {
+                $existing = $pet->pet_image;
+                if ($existing) {
+                    $existingPath = ltrim(str_replace('/storage/', '', parse_url($existing, PHP_URL_PATH) ?? $existing), '/');
+                    Storage::disk('public')->delete($existingPath);
+                }
+                $imagePath = $request->file('pet_image')->store('pet_images', 'public');
+                $updateData['pet_image'] = $imagePath; // store path only
+            }
+
+            $pet->update($updateData);
 
             return response()->json([
                 'success' => true,
@@ -276,6 +323,11 @@ class MobilePetController extends Controller
                     'weight' => $pet->weight,
                     'microchip_id' => $pet->microchip_id,
                     'medical_notes' => $pet->medical_notes,
+                    'pet_image' => $pet->pet_image
+                        ? (str_starts_with($pet->pet_image, 'http') || str_starts_with($pet->pet_image, '/storage/')
+                            ? $pet->pet_image
+                            : Storage::url(ltrim(str_replace('/storage/', '', parse_url($pet->pet_image, PHP_URL_PATH) ?? $pet->pet_image), '/')))
+                        : null,
                 ]
             ], 200);
 
@@ -307,6 +359,11 @@ class MobilePetController extends Controller
         }
 
         try {
+            if ($pet->pet_image) {
+                $existingPath = ltrim(str_replace('/storage/', '', parse_url($pet->pet_image, PHP_URL_PATH) ?? $pet->pet_image), '/');
+                Storage::disk('public')->delete($existingPath);
+            }
+
             $pet->delete();
 
             return response()->json([

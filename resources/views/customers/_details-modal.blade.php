@@ -10,6 +10,10 @@
             </button>
             <h3 class="text-xl font-bold mb-2">Customer Information</h3>
             <div class="mb-4">
+                <p class="text-sm text-gray-500">Profile Image</p>
+                <img src="{{ $customer->profile_image ? asset('storage/' . $customer->profile_image) : 'https://via.placeholder.com/150' }}" alt="Customer Profile Image" class="w-24 h-24 rounded-full object-cover">
+            </div>
+            <div class="mb-4">
                 <p class="text-sm text-gray-500">Name</p>
                 <p class="font-semibold">{{ $customer->name }}</p>
                 <p class="text-sm text-gray-500">IC Number</p>

@@ -112,6 +112,7 @@ class MobileAuthController extends Controller
                         'phone' => $customer->phone,
                         'ic_number' => $customer->ic_number,
                         'address' => $customer->address,
+                        'profile_image' => $customer->profile_image ?? null,
                     ],
                     'token' => $token,
                     'token_type' => 'Bearer'
@@ -187,6 +188,7 @@ class MobileAuthController extends Controller
                     'phone' => $user->customer->phone,
                     'ic_number' => $user->customer->ic_number,
                     'address' => $user->customer->address,
+                    'profile_image' => $user->customer->profile_image ?? null,
                 ] : null,
                 'token' => $token,
                 'token_type' => 'Bearer'
@@ -237,6 +239,7 @@ class MobileAuthController extends Controller
                     'phone' => $user->customer->phone,
                     'ic_number' => $user->customer->ic_number,
                     'address' => $user->customer->address,
+                    'profile_image' => $user->customer->profile_image ?? null,
                 ] : null,
             ]
         ], 200);

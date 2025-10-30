@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Storage;
 
 class MobileProfileController extends Controller
 {
@@ -42,6 +43,11 @@ class MobileProfileController extends Controller
                     'email' => $user->customer->email,
                     'phone' => $user->customer->phone,
                     'ic_number' => $user->customer->ic_number,
+                    'profile_image' => $user->customer->profile_image
+                        ? (str_starts_with($user->customer->profile_image, 'http') || str_starts_with($user->customer->profile_image, '/storage/')
+                            ? $user->customer->profile_image
+                            : Storage::url(ltrim(str_replace('/storage/', '', parse_url($user->customer->profile_image, PHP_URL_PATH) ?? $user->customer->profile_image), '/')))
+                        : null,
                     'address' => $user->customer->address,
                 ],
                 'stats' => [
@@ -74,6 +80,8 @@ class MobileProfileController extends Controller
             'phone' => 'sometimes|required|string|max:20',
             'address' => 'sometimes|nullable|string|max:500',
             'email' => 'sometimes|required|email|max:255|unique:users,email,' . $user->id,
+            'profile_image' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'remove_profile_image' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -103,6 +111,27 @@ class MobileProfileController extends Controller
             if ($request->has('email')) {
                 $customerData['email'] = strtolower($request->email);
             }
+
+            // Remove existing image when requested
+            if ($request->boolean('remove_profile_image')) {
+                $existing = $user->customer->profile_image;
+                if ($existing) {
+                    $existingPath = ltrim(str_replace('/storage/', '', parse_url($existing, PHP_URL_PATH) ?? $existing), '/');
+                    Storage::disk('public')->delete($existingPath);
+                }
+                $customerData['profile_image'] = null;
+            }
+
+            // Save new image if uploaded
+            if ($request->hasFile('profile_image')) {
+                $existing = $user->customer->profile_image;
+                if ($existing) {
+                    $existingPath = ltrim(str_replace('/storage/', '', parse_url($existing, PHP_URL_PATH) ?? $existing), '/');
+                    Storage::disk('public')->delete($existingPath);
+                }
+                $imagePath = $request->file('profile_image')->store('profile_images', 'public');
+                $customerData['profile_image'] = $imagePath; // store storage path only
+            }
             
             if (!empty($customerData)) {
                 $user->customer->update($customerData);
@@ -127,6 +156,11 @@ class MobileProfileController extends Controller
                         'phone' => $user->customer->phone,
                         'ic_number' => $user->customer->ic_number,
                         'address' => $user->customer->address,
+                        'profile_image' => $user->customer->profile_image
+                            ? (str_starts_with($user->customer->profile_image, 'http') || str_starts_with($user->customer->profile_image, '/storage/')
+                                ? $user->customer->profile_image
+                                : Storage::url(ltrim(str_replace('/storage/', '', parse_url($user->customer->profile_image, PHP_URL_PATH) ?? $user->customer->profile_image), '/')))
+                            : null,
                     ]
                 ]
             ], 200);
