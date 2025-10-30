@@ -128,7 +128,7 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pet</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -156,8 +156,8 @@
                         {{ ucfirst($booking->status) }}
                     </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <a href="{{ route('bookings.show', $booking) }}" class="text-blue-600 hover:text-blue-900 mr-3">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                    <a href="{{ route('bookings.show', $booking) }}" class="text-blue-600 hover:text-blue-900">
                         <i class="fas fa-eye"></i>
                     </a>
                 </td>
