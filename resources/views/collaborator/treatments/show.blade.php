@@ -130,13 +130,6 @@
                     </div>
                 @endif
 
-                @if($treatment->cost)
-                    <div>
-                        <h5 class="font-semibold text-gray-900 mb-1">Treatment Cost</h5>
-                        <p class="text-gray-700 text-lg">RM {{ number_format($treatment->cost, 2) }}</p>
-                    </div>
-                @endif
-
                 @if($treatment->notes)
                     <div>
                         <h5 class="font-semibold text-gray-900 mb-1">Additional Notes</h5>

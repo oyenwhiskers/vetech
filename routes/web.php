@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Route;
 // Public route for QR scan
 Route::get('/scan/{tagCode}', [TagController::class, 'scan'])->name('tags.scan');
 
+// Bind route model to include soft-deleted treatments when resolving {treatment}
+Route::bind('treatment', function ($value) {
+    return \App\Models\Treatment::withTrashed()->findOrFail($value);
+});
+
 // Root: send authenticated users to dashboard, guests to login
 Route::get('/', function () {
     return auth()->check()
