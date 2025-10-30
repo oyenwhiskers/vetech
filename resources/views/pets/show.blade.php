@@ -51,51 +51,104 @@
                 ?>
                 <img src="{{ $imgSrc }}" alt="Pet Image" class="w-40 h-40 rounded-xl object-cover border" />
             </div>
-            <div class="flex flex-col gap-2 text-gray-800">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-dog text-[#334da1]"></i>
+            <div class="flex flex-col gap-3 text-gray-800">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-paw text-[#334da1]"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Name</span>
+                    </div>
                     <span class="font-semibold text-lg">{{ $pet->name }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-user text-gray-500"></i>
-                    <span>{{ $customer->name }}</span>
+
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-user text-gray-500"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Owner</span>
+                    </div>
+                    <span class="font-medium">{{ $customer->name }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-dna text-gray-500"></i>
-                    <span>{{ $pet->species }} / {{ $pet->breed ?: 'N/A' }}</span>
+
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-dna text-gray-500"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Breed</span>
+                    </div>
+                    <span class="font-medium">{{ $pet->species }} / {{ $pet->breed ?: 'N/A' }}</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-venus-mars text-gray-500"></i>
-                    <span>{{ ucfirst($pet->gender) }}</span>
+
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-venus-mars text-gray-500"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Gender</span>
+                    </div>
+                    <span class="font-medium">{{ ucfirst($pet->gender) }}</span>
                 </div>
+
                 @if($pet->age)
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-hourglass-half text-gray-500"></i>
-                    <span>{{ $pet->age }} years old</span>
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-hourglass-half text-gray-500"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Age</span>
+                    </div>
+                    <span class="px-2.5 py-1 text-xs rounded-full bg-blue-50 text-blue-700 font-semibold">{{ $pet->age }} years</span>
                 </div>
                 @endif
+
                 @if($pet->weight)
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-weight text-gray-500"></i>
-                    <span>{{ $pet->weight }} kg</span>
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-weight text-gray-500"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Weight</span>
+                    </div>
+                    <span class="px-2.5 py-1 text-xs rounded-full bg-emerald-50 text-emerald-700 font-semibold">{{ $pet->weight }} kg</span>
                 </div>
                 @endif
+
                 @if($pet->color)
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-palette text-gray-500"></i>
-                    <span>{{ $pet->color }}</span>
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-palette text-gray-500"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Color</span>
+                    </div>
+                    <span class="font-medium">{{ $pet->color }}</span>
                 </div>
                 @endif
+
                 @if($pet->microchip_number)
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-microchip text-gray-500"></i>
-                    <span>{{ $pet->microchip_number }}</span>
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-microchip text-gray-500"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Microchip</span>
+                    </div>
+                    <span class="px-2.5 py-1 text-xs rounded-md bg-gray-100 text-gray-700 font-mono tracking-wide">{{ $pet->microchip_number }}</span>
                 </div>
                 @endif
+
                 @if($pet->tag)
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-qrcode text-green-600"></i>
-                    <a href="{{ route('tags.show', $pet->tag) }}" class="text-green-600 hover:text-green-800 font-semibold">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center">
+                            <i class="fas fa-qrcode text-green-600"></i>
+                        </span>
+                        <span class="text-sm text-gray-500">Tag</span>
+                    </div>
+                    <a href="{{ route('tags.show', $pet->tag) }}" class="px-3 py-1 text-xs rounded-full bg-green-50 text-green-700 hover:bg-green-100 font-semibold transition-colors">
                         {{ $pet->tag->tag_code }}
                     </a>
                 </div>

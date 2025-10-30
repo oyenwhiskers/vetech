@@ -169,10 +169,10 @@
             <!-- QR Code Display -->
             <div class="flex justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
                 @if($tag->qr_code_path)
-                        <div class="bg-white p-3 rounded-lg shadow-md border-4 border-white">
+                        <div class="bg-white p-1 rounded-lg shadow-md">
                         <img src="{{ $tag->qr_code_path }}" 
                              alt="QR Code" 
-                                 class="w-44 h-44 object-contain">
+                                 class="w-56 h-56 object-contain">
                     </div>
                 @else
                     <div class="w-48 h-48 bg-gray-200 flex items-center justify-center rounded-xl">

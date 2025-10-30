@@ -15,12 +15,12 @@
     <div class="lg:col-span-1">
         <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl shadow-lg p-8 sticky top-6">
             <div class="flex justify-center mb-4">
-                <div class="bg-white p-6 rounded-2xl shadow-md">
+                <div class="bg-white p-2 rounded-2xl shadow-md">
                     @if($tag->qr_code_path)
                         @php
                             $isUrl = Str::startsWith($tag->qr_code_path, ['http://', 'https://']);
                         @endphp
-                        <img src="{{ $isUrl ? $tag->qr_code_path : asset('storage/' . $tag->qr_code_path) }}" 
+                        <img src="{{ $isUrl ? $tag->qr_code_path : asset($tag->qr_code_path) }}" 
                              alt="QR Code" 
                              class="w-64 h-64 object-contain">
                     @else
@@ -42,10 +42,16 @@
             </div>
 
             @if($tag->qr_code_path)
-                <a href="{{ route('tags.scan', $tag->tag_code) }}" target="_blank" 
-                   class="block w-full text-center bg-white border-2 border-blue-300 text-blue-700 font-semibold py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors mb-3">
-                    <i class="fas fa-external-link-alt mr-2"></i>Preview Scan Page
-                </a>
+                @if($tag->pet)
+                    <a href="{{ route('tags.scan', $tag->tag_code) }}" target="_blank" 
+                       class="block w-full text-center bg-white border-2 border-blue-300 text-blue-700 font-semibold py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors mb-3">
+                        <i class="fas fa-external-link-alt mr-2"></i>Preview Scan Page
+                    </a>
+                @else
+                    <div class="block w-full text-center bg-gray-100 border-2 border-gray-300 text-gray-400 font-semibold py-3 px-4 rounded-lg cursor-not-allowed mb-3">
+                        <i class="fas fa-lock mr-2"></i>Preview Locked (assign tag first)
+                    </div>
+                @endif
             @endif
         </div>
     </div>
