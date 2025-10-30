@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\QrGeneratorController;
 
 class TagController extends Controller
 {
@@ -70,10 +71,12 @@ class TagController extends Controller
         $createdTags = [];
 
         for ($i = 0; $i < $quantity; $i++) {
-            // Generate unique plain number tag code (4 digits)
-            $tagCode = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-            while (Tag::where('tag_code', $tagCode)->exists()) {
-                $tagCode = str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+            // Check the current highest tag code
+            $highestTag = Tag::orderBy('tag_code', 'desc')->first();
+            if ($highestTag) {
+                $tagCode = $highestTag->tag_code + 1;
+            } else {
+                $tagCode = 1000;
             }
 
             $tagData = [
@@ -84,11 +87,9 @@ class TagController extends Controller
                 'status' => 'active',
             ];
 
-            // Generate QR code with ONLY the tag number (not a URL)
-            // Generic scanners will show just the number
-            // Custom mobile app scanner will append the correct URL
-            $qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($tagCode);
-            $tagData['qr_code_path'] = $qrApiUrl;
+            // Generate and locally store QR code with ONLY the tag number
+            $qrPublicUrl = QrGeneratorController::generateQrCodeAndSave($tagCode, 500, $tagCode.'.png');
+            $tagData['qr_code_path'] = $qrPublicUrl;
 
             $createdTags[] = Tag::create($tagData);
         }
@@ -146,34 +147,45 @@ class TagController extends Controller
 
     public function download(Tag $tag)
     {
-        if (!$tag->qr_code_path) {
+        if (empty($tag->qr_code_path)) {
             return redirect()->back()->with('error', 'QR Code not found.');
         }
-    
-        // Handle external QR code URLs
+
+        // Handle external QR code URLs (legacy/external support)
         if (Str::startsWith($tag->qr_code_path, ['http://', 'https://'])) {
-    
             $ch = curl_init($tag->qr_code_path);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             $imageContent = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-    
+
             if ($imageContent === false || $httpCode !== 200) {
                 return redirect()->back()->with('error', 'Unable to download QR Code.');
             }
-    
+
             return response($imageContent)
                 ->header('Content-Type', 'image/png')
                 ->header('Content-Disposition', 'attachment; filename="'.$tag->tag_code.'.png"');
         }
-    
-        // Local storage fallback
-        if (!Storage::disk('public')->exists($tag->qr_code_path)) {
+
+        // For local storage, ensure qr_code_path is relative to the 'public' disk (e.g., 'qrcodes/123.png')
+        $path = $tag->qr_code_path;
+        // If stored as full URL, remove base URL prefix
+        $path = str_replace(url('storage/'), '', $path);
+        // If stored with 'storage/' prefix, strip it as the disk root is already 'public'
+        if (Str::startsWith($path, 'storage/')) {
+            $path = Str::after($path, 'storage/');
+        }
+        $relativePath = ltrim($path, '/');
+
+        if (!Storage::disk('public')->exists($relativePath)) {
             return redirect()->back()->with('error', 'QR Code not found.');
         }
-    
-        return Storage::disk('public')->download($tag->qr_code_path, $tag->tag_code.'.png');
+
+        $absolutePath = Storage::disk('public')->path($relativePath);
+        return response()->download($absolutePath, $tag->tag_code.'.png', [
+            'Content-Type' => 'image/png',
+        ]);
     }
 }
