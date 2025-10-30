@@ -181,18 +181,6 @@
                     </div>
                 </div>
                 @endif
-
-                <!-- Action Buttons -->
-                <div class="flex flex-wrap gap-3 pt-6 border-t border-gray-200">
-                    <a href="{{ route('bookings.edit', $booking) }}" 
-                       class="flex-1 min-w-[200px] bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center">
-                        <i class="fas fa-edit mr-2"></i>Edit Booking
-                    </a>
-                    <button type="button" onclick="document.getElementById('deleteModal').classList.remove('hidden')" 
-                            class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center">
-                        <i class="fas fa-trash mr-2"></i>Delete
-                    </button>
-                </div>
             </div>
         </div>
     </div>

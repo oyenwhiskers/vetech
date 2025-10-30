@@ -160,9 +160,6 @@
                     <a href="{{ route('bookings.show', $booking) }}" class="text-blue-600 hover:text-blue-900 mr-3">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a href="{{ route('bookings.edit', $booking) }}" class="text-yellow-600 hover:text-yellow-900">
-                        <i class="fas fa-edit"></i>
-                    </a>
                 </td>
             </tr>
             @empty
