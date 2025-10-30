@@ -91,12 +91,16 @@
                     <i class="fas fa-lock text-gray-400"></i>
                 </div>
                 <x-text-input id="password" 
-                    class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    class="block w-full pl-10 pr-14 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                     type="password"
                     name="password"
                     required 
                     autocomplete="new-password"
                     placeholder="••••••••" />
+                <button type="button" onclick="togglePasswordVisibility('password', this)" tabindex="-1"
+                    class="absolute inset-y-0 right-0 px-3 flex items-center focus:outline-none">
+                    <i class="fas fa-eye text-gray-400"></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
@@ -109,12 +113,16 @@
                     <i class="fas fa-lock text-gray-400"></i>
                 </div>
                 <x-text-input id="password_confirmation" 
-                    class="block w-full pl-10 pr-4 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    class="block w-full pl-10 pr-14 py-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                     type="password"
                     name="password_confirmation" 
                     required 
                     autocomplete="new-password"
                     placeholder="••••••••" />
+                <button type="button" onclick="togglePasswordVisibility('password_confirmation', this)" tabindex="-1"
+                    class="absolute inset-y-0 right-0 px-3 flex items-center focus:outline-none">
+                    <i class="fas fa-eye text-gray-400"></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
@@ -143,4 +151,19 @@
             Sign In Instead
         </a>
     </div>
+    <script>
+        function togglePasswordVisibility(fieldId, btn) {
+            const input = document.getElementById(fieldId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </x-guest-layout>
