@@ -28,8 +28,27 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-            <div>
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 pt-4 border-t">
+            <div class="col-span-1 flex justify-center items-center">
+                <?php
+                $placeholder = 'https://www.animalfocusvet.com/wp-content/uploads/sites/272/2023/01/Placeholder-23.png';
+                $raw = $tag->pet->pet_image ?? null;
+                if ($raw) {
+                    $isHttp = preg_match('#^https?://#i', $raw) === 1;
+                    $isStorageUrl = strpos($raw, '/storage/') === 0;
+                    if ($isHttp || $isStorageUrl) {
+                        $imgSrc = $raw;
+                    } else {
+                        $normalized = ltrim(preg_replace('#^/?storage/#', '', $raw), '/');
+                        $imgSrc = asset('storage/' . $normalized);
+                    }
+                } else {
+                    $imgSrc = $placeholder;
+                }
+                ?>
+                <img src="{{ $imgSrc }}" alt="Pet Image" class="w-24 h-24 rounded-xl object-cover border" />
+            </div>
+            <div class="col-span-2">
                 <h4 class="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Pet Information</h4>
                 <dl class="space-y-1 text-xs sm:text-sm">
                     <div><dt class="inline font-medium">Gender:</dt> <dd class="inline">{{ ucfirst($tag->pet->gender) }}</dd></div>
@@ -44,7 +63,26 @@
                     @endif
                 </dl>
             </div>
-            <div>
+            <div class="col-span-1 flex justify-center items-center">
+                <?php
+                $placeholder = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541';
+                $raw = $tag->pet->customer->profile_image ?? null;
+                if ($raw) {
+                    $isHttp = preg_match('#^https?://#i', $raw) === 1;
+                    $isStorageUrl = strpos($raw, '/storage/') === 0;
+                    if ($isHttp || $isStorageUrl) {
+                        $imgSrc = $raw;
+                    } else {
+                        $normalized = ltrim(preg_replace('#^/?storage/#', '', $raw), '/');
+                        $imgSrc = asset('storage/' . $normalized);
+                    }
+                } else {
+                    $imgSrc = $placeholder;
+                }
+                ?>
+                <img src="{{ $imgSrc }}" alt="Customer Profile Image" class="w-24 h-24 rounded-xl object-cover border" />
+            </div>
+            <div class="col-span-2">
                 <h4 class="font-semibold text-gray-900 mb-2 text-sm sm:text-base">Owner Information</h4>
                 <dl class="space-y-1 text-xs sm:text-sm">
                     <div><dt class="inline font-medium">Name:</dt> <dd class="inline">{{ $tag->pet->customer->name }}</dd></div>

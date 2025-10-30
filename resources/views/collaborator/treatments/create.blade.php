@@ -136,26 +136,6 @@
                     @enderror
                 </div>
 
-                <!-- Cost -->
-                <div>
-                    <label for="cost" class="block text-sm font-medium text-gray-700 mb-1">
-                        Treatment Cost (RM)
-                    </label>
-                    <input 
-                        type="number" 
-                        id="cost" 
-                        name="cost" 
-                        value="{{ old('cost') }}"
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
-                        class="w-full text-base border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
-                    />
-                    @error('cost')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
                 <!-- Notes -->
                 <div>
                     <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">

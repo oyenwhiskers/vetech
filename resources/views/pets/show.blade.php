@@ -119,7 +119,7 @@
 
             @if($pet->treatments->count() > 0)
                 <div class="space-y-4">
-                    @foreach($pet->treatments as $treatment)
+                    @foreach($pet->treatments->sortByDesc('treatment_date') as $treatment)
                         <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                             <div class="flex justify-between items-center mb-2">
                                 <div>
@@ -149,7 +149,7 @@
                                 @if($treatment->treated_by)
                                     <div class="text-sm"><strong>Treated By:</strong> {{ $treatment->treated_by }}</div>
                                 @endif
-                                @if($treatment->cost)
+                                @if($treatment->cost && $treatment->treatment_location == 'government')
                                     <div class="text-sm"><strong>Cost:</strong> RM {{ number_format($treatment->cost, 2) }}</div>
                                 @endif
                             </div>
