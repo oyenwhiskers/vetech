@@ -44,9 +44,22 @@ class MobileProfileController extends Controller
                     'phone' => $user->customer->phone,
                     'ic_number' => $user->customer->ic_number,
                     'profile_image' => $user->customer->profile_image
-                        ? (str_starts_with($user->customer->profile_image, 'http') || str_starts_with($user->customer->profile_image, '/storage/')
-                            ? $user->customer->profile_image
-                            : Storage::url(ltrim(str_replace('/storage/', '', parse_url($user->customer->profile_image, PHP_URL_PATH) ?? $user->customer->profile_image), '/')))
+                        ? (
+                            str_starts_with($user->customer->profile_image, 'http')
+                                ? $user->customer->profile_image
+                                : url(
+                                    Storage::url(
+                                        ltrim(
+                                            str_replace(
+                                                '/storage/',
+                                                '',
+                                                parse_url($user->customer->profile_image, PHP_URL_PATH) ?? $user->customer->profile_image
+                                            ),
+                                            '/'
+                                        )
+                                    )
+                                )
+                        )
                         : null,
                     'address' => $user->customer->address,
                 ],
@@ -157,9 +170,22 @@ class MobileProfileController extends Controller
                         'ic_number' => $user->customer->ic_number,
                         'address' => $user->customer->address,
                         'profile_image' => $user->customer->profile_image
-                            ? (str_starts_with($user->customer->profile_image, 'http') || str_starts_with($user->customer->profile_image, '/storage/')
-                                ? $user->customer->profile_image
-                                : Storage::url(ltrim(str_replace('/storage/', '', parse_url($user->customer->profile_image, PHP_URL_PATH) ?? $user->customer->profile_image), '/')))
+                            ? (
+                                str_starts_with($user->customer->profile_image, 'http')
+                                    ? $user->customer->profile_image
+                                    : url(
+                                        Storage::url(
+                                            ltrim(
+                                                str_replace(
+                                                    '/storage/',
+                                                    '',
+                                                    parse_url($user->customer->profile_image, PHP_URL_PATH) ?? $user->customer->profile_image
+                                                ),
+                                                '/'
+                                            )
+                                        )
+                                    )
+                            )
                             : null,
                     ]
                 ]
