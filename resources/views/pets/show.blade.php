@@ -220,70 +220,81 @@
 </div>
 
 <!-- Add Treatment Modal -->
-<div id="addTreatmentModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold">Add Treatment Record</h3>
-            <button onclick="document.getElementById('addTreatmentModal').classList.add('hidden')" class="text-gray-600 hover:text-gray-800">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <form action="{{ route('customers.pets.treatments.store', [$customer, $pet]) }}" method="POST">
+<div id="addTreatmentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+    <div class="w-full h-full flex items-center justify-center p-4 overflow-y-auto">
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl p-6 md:p-8 relative">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="bg-blue-600 text-white rounded-full flex items-center justify-center w-12 h-12 shadow-lg">
+                        <i class="fas fa-notes-medical text-2xl"></i>
+                    </span>
+                    <h3 class="text-xl md:text-2xl font-bold text-[#334da1]">Add Treatment Record</h3>
+                </div>
+                <button onclick="document.getElementById('addTreatmentModal').classList.add('hidden')" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form action="{{ route('customers.pets.treatments.store', [$customer, $pet]) }}" method="POST" class="space-y-6">
             @csrf
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Treatment Date *</label>
-                    <input type="date" name="treatment_date" value="{{ date('Y-m-d') }}" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-calendar-day mr-1 text-blue-600"></i> Treatment Date *</label>
+                        <input type="date" name="treatment_date" value="{{ date('Y-m-d') }}" required
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-user-md mr-1 text-blue-600"></i> Treated By</label>
+                        <input type="text" name="treated_by" value="{{ Auth::user()->name }}"
+                            placeholder="e.g., Dr. Smith, Dr. Johnson"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Treated By</label>
-                    <input type="text" name="treated_by" value="{{ Auth::user()->name }}"
-                        placeholder="e.g., Dr. Smith, Dr. Johnson"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Disease (if any)</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-viruses mr-1 text-blue-600"></i> Disease (if any)</label>
                     <input type="text" name="disease"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Diagnosis *</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-file-medical mr-1 text-blue-600"></i> Diagnosis *</label>
                     <textarea name="diagnosis" rows="3" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea>
+                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Treatment Given *</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-syringe mr-1 text-blue-600"></i> Treatment Given *</label>
                     <textarea name="treatment_given" rows="3" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea>
+                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Medication</label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-pills mr-1 text-blue-600"></i> Medication</label>
                     <textarea name="medication" rows="2"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea>
+                        class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base"></textarea>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Cost (RM)</label>
-                    <input type="number" name="cost" step="0.01" min="0"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Notes</label>
-                    <textarea name="notes" rows="2"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-dollar-sign mr-1 text-blue-600"></i> Cost (RM)</label>
+                        <input type="number" name="cost" step="0.01" min="0"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-sticky-note mr-1 text-blue-600"></i> Notes</label>
+                        <textarea name="notes" rows="2"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base"></textarea>
+                    </div>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end space-x-3">
+            <div class="flex justify-end gap-3 mt-2">
                 <button type="button" onclick="document.getElementById('addTreatmentModal').classList.add('hidden')"
-                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
-                    Cancel
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors">
+                    <i class="fas fa-times"></i> Cancel
                 </button>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-                    Save Treatment
+                <button type="submit" class="bg-[#334da1] hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold flex items-center gap-2 transition-colors">
+                    <i class="fas fa-save"></i> Save Treatment
                 </button>
             </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

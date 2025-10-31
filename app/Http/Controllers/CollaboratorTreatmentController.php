@@ -79,6 +79,8 @@ class CollaboratorTreatmentController extends Controller
             'medication' => 'nullable|string',
             'cost' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
+            'temperature' => 'nullable|numeric|min:0',
+            'weight' => 'nullable|numeric|min:0',
         ]);
 
         $user = Auth::user();

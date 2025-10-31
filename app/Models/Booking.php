@@ -20,6 +20,7 @@ class Booking extends Model
         'status',
         'queue_number',
         'notes',
+        'booking_by',
     ];
 
     protected $casts = [
@@ -41,5 +42,13 @@ class Booking extends Model
     public function pet(): BelongsTo
     {
         return $this->belongsTo(Pet::class);
+    }
+
+    /**
+     * Get the user who booked the appointment.
+     */
+    public function bookingBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'booking_by');
     }
 }

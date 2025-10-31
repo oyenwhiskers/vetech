@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Customer;
 use App\Models\Pet;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -63,12 +64,14 @@ class BookingController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $validated['status'] = 'pending';
-        
+        $validated['status'] = 'confirmed';
+
+        // must have a user who is booking the appointment
+        $validated['booking_by'] = Auth::user()->id;
         // Generate queue number for the day
-        $lastQueue = Booking::whereDate('booking_date', $validated['booking_date'])
-            ->max('queue_number');
-        $validated['queue_number'] = $lastQueue ? $lastQueue + 1 : 1;
+        // $lastQueue = Booking::whereDate('booking_date', $validated['booking_date'])
+        //     ->max('queue_number');
+        // $validated['queue_number'] = $lastQueue ? $lastQueue + 1 : 1;
 
         Booking::create($validated);
 
@@ -84,6 +87,9 @@ class BookingController extends Controller
 
     public function edit(Booking $booking)
     {
+        if ($booking->booking_by !== Auth::id()) {
+            abort(403, 'You are not authorized to edit this booking.');
+        }
         $customers = Customer::orderBy('name')->get();
         $pets = Pet::with('customer')->orderBy('name')->get();
         return view('bookings.edit', compact('booking', 'customers', 'pets'));
@@ -91,6 +97,9 @@ class BookingController extends Controller
 
     public function update(Request $request, Booking $booking)
     {
+        if ($booking->booking_by !== Auth::id()) {
+            abort(403, 'You are not authorized to update this booking.');
+        }
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'pet_id' => 'required|exists:pets,id',
@@ -110,6 +119,9 @@ class BookingController extends Controller
 
     public function destroy(Booking $booking)
     {
+        if ($booking->booking_by !== Auth::id()) {
+            abort(403, 'You are not authorized to delete this booking.');
+        }
         $booking->delete();
 
         return redirect()->route('bookings.index')
@@ -118,6 +130,9 @@ class BookingController extends Controller
 
     public function updateStatus(Request $request, Booking $booking)
     {
+        if ($booking->booking_by !== Auth::id()) {
+            abort(403, 'You are not authorized to modify this booking status.');
+        }
         $validated = $request->validate([
             'status' => 'required|in:pending,confirmed,completed,cancelled',
         ]);

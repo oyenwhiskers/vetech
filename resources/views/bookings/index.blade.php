@@ -92,6 +92,13 @@
     </div>
 </div>
 
+<!-- Set Customer Appointment Button -->
+<div class="flex justify-end mb-4">
+    <a href="{{ route('bookings.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+        <i class="fas fa-plus mr-2"></i>Set Customer Appointment
+    </a>
+</div>
+
 <!-- Filters -->
 <div class="bg-white rounded-lg shadow p-4 mb-6">
     <form method="GET" action="{{ route('bookings.index') }}" class="flex gap-4">
@@ -140,6 +147,9 @@
                     </span>
                 </td> -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    @if($booking->booking_by !== null)
+                    <div class="text-blue-600">Appointment</div>
+                    @endif
                     <div>{{ $booking->booking_date->format('d M Y') }}</div>
                     <div class="text-gray-600">{{ date('H:i', strtotime($booking->booking_time)) }}</div>
                 </td>
@@ -160,6 +170,14 @@
                     <a href="{{ route('bookings.show', $booking) }}" class="text-blue-600 hover:text-blue-900">
                         <i class="fas fa-eye"></i>
                     </a>
+                    @if($booking->booking_by == Auth::user()->id)
+                    <a href="{{ route('bookings.edit', $booking) }}" class="text-yellow-600 hover:text-yellow-900 ml-2">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <button type="button" data-booking-id="{{ $booking->id }}" class="js-delete-booking text-red-600 hover:text-red-900 ml-2">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    @endif
                 </td>
             </tr>
             @empty
@@ -170,6 +188,23 @@
         </tbody>
     </table>
 </div>
+
+<form id="delete-booking-form" method="POST" action="#" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
+<script>
+document.addEventListener('click', function (e) {
+    var target = e.target.closest('.js-delete-booking');
+    if (!target) return;
+    var bookingId = target.getAttribute('data-booking-id');
+    if (!bookingId) return;
+    if (!confirm('Delete this booking? This action cannot be undone.')) return;
+    var form = document.getElementById('delete-booking-form');
+    form.action = "{{ url('bookings') }}" + '/' + bookingId;
+    form.submit();
+});
+</script>
 
 <div class="mt-6">
     {{ $bookings->links() }}

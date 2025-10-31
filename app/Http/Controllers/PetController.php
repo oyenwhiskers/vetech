@@ -76,6 +76,7 @@ class PetController extends Controller
             'breed' => 'nullable|string|max:255',
             'age' => 'nullable|integer|min:0',
             'gender' => 'required|in:male,female',
+            'status' => 'required|in:alive,deceased',
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
             'special_notes' => 'nullable|string',
@@ -117,6 +118,8 @@ class PetController extends Controller
             'medication' => 'nullable|string',
             'cost' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
+            'temperature' => 'nullable|numeric|min:0',
+            'weight' => 'nullable|numeric|min:0',
         ]);
 
         $validated['pet_id'] = $pet->id;

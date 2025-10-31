@@ -23,6 +23,8 @@ class Treatment extends Model
         'medication',
         'cost',
         'notes',
+        'temperature',
+        'weight',
         'treatment_location',
         'deleted_by',
     ];
@@ -30,6 +32,8 @@ class Treatment extends Model
     protected $casts = [
         'treatment_date' => 'date',
         'cost' => 'decimal:2',
+        'temperature' => 'decimal:2',
+        'weight' => 'decimal:2',
     ];
 
     /**
