@@ -154,10 +154,11 @@
                         @endif
 
                         <div class="mt-3 flex flex-wrap gap-2">
-                            <a href="{{ route('collaborator.treatments.show', $treatment) }}" 
-                               class="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            <button type="button"
+                               data-url="{{ route('collaborator.treatments.show', $treatment) }}"
+                               class="js-open-treatment-modal text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium">
                                 <i class="fas fa-eye mr-1"></i>View Details
-                            </a>
+                            </button>
                             @if(!$treatment->trashed() && $treatment->canBeDeletedBy(Auth::user()))
                                 <form method="POST" action="{{ route('collaborator.treatments.destroy', $treatment) }}" 
                                       onsubmit="return confirm('Are you sure you want to delete this treatment record? It will be moved to the deleted log.');"
@@ -194,5 +195,59 @@
             <i class="fas fa-arrow-left mr-2"></i>Back to Scanner
         </a>
     </div>
+    <!-- Treatment Details Modal -->
+    <div id="treatmentDetailsModal" class="hidden fixed inset-0 z-50">
+        <div class="w-full h-full bg-black bg-opacity-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] overflow-y-auto">
+                <div class="flex items-center justify-between px-5 py-3 border-b">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-blue-600 text-white rounded-full flex items-center justify-center w-10 h-10">
+                            <i class="fas fa-notes-medical"></i>
+                        </span>
+                        <h4 class="text-lg font-bold text-[#334da1]">Treatment Details</h4>
+                    </div>
+                    <button type="button" class="text-gray-600 hover:text-gray-800 js-close-treatment-modal" aria-label="Close">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div id="treatmentModalBody" class="p-5">
+                    <div id="treatmentModalLoading" class="flex items-center justify-center py-10 text-gray-500">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('click', function(e) {
+        var openBtn = e.target.closest('.js-open-treatment-modal');
+        if (openBtn) {
+            var modal = document.getElementById('treatmentDetailsModal');
+            var body = document.getElementById('treatmentModalBody');
+            var loading = document.getElementById('treatmentModalLoading');
+            var url = openBtn.getAttribute('data-url');
+            if (!modal || !body || !url) return;
+            // Reset content and show loader
+            body.innerHTML = '<div id="treatmentModalLoading" class="flex items-center justify-center py-10 text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>';
+            modal.classList.remove('hidden');
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function(res){ return res.text(); })
+                .then(function(html){ body.innerHTML = html; })
+                .catch(function(){ body.innerHTML = '<div class="text-center py-10 text-red-600">Failed to load details. Please try again.</div>'; });
+            return;
+        }
+        var closeBtn = e.target.closest('.js-close-treatment-modal');
+        if (closeBtn) {
+            var modal = document.getElementById('treatmentDetailsModal');
+            if (modal) modal.classList.add('hidden');
+            return;
+        }
+        var overlay = e.target.closest('#treatmentDetailsModal > div');
+        if (!overlay && e.target.id === 'treatmentDetailsModal') {
+            document.getElementById('treatmentDetailsModal').classList.add('hidden');
+        }
+    });
+    </script>
 </div>
 @endsection

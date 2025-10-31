@@ -102,9 +102,12 @@ class CollaboratorTreatmentController extends Controller
     public function show(Treatment $treatment)
     {
         $treatment->load(['pet.customer', 'user', 'collaborator', 'deleter']);
-        
         $canDelete = $treatment->canBeDeletedBy(Auth::user()) && !$treatment->trashed();
-        
+
+        if (request()->ajax()) {
+            return view('collaborator.treatments.partials.show-modal', compact('treatment', 'canDelete'));
+        }
+
         return view('collaborator.treatments.show', compact('treatment', 'canDelete'));
     }
 

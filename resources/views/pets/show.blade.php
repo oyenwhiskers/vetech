@@ -270,7 +270,18 @@
                     <textarea name="medication" rows="2"
                         class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base"></textarea>
                 </div>
-
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-temperature-high mr-1 text-blue-600"></i> Temperature (°C)</label>
+                        <input type="number" name="temperature" step="0.01" min="0"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-weight mr-1 text-blue-600"></i> Weight (kg)</label>
+                        <input type="number" name="weight" step="0.01" min="0"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 border text-base">
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-dollar-sign mr-1 text-blue-600"></i> Cost (RM)</label>
