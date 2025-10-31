@@ -24,13 +24,27 @@ class CollaboratorTreatmentController extends Controller
     public function scan($tagCode)
     {
         $tag = Tag::where('tag_code', $tagCode)
-            ->where('status', 'active')
             ->with(['pet.customer', 'pet.treatments' => function($query) {
                 $query->with(['user', 'collaborator', 'deleter'])
                       ->withTrashed()
                       ->orderBy('treatment_date', 'desc');
             }])
-            ->firstOrFail();
+            ->first();
+
+        // Handle not found
+        if (!$tag) {
+            return redirect()->back()->with('error', 'Tag not found.');
+        }
+
+        // Ensure active status
+        if ($tag->status !== 'active') {
+            return redirect()->back()->with('error', 'Tag is not active.');
+        }
+
+        // Ensure the tag is assigned to a pet
+        if (empty($tag->pet)) {
+            return redirect()->back()->with('error', 'Tag is not assigned.');
+        }
 
         return view('collaborator.scan-result', compact('tag'));
     }

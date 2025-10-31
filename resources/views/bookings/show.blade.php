@@ -47,18 +47,19 @@
             </div> -->
 
             <!-- Quick Status Update -->
-            <form action="{{ route('bookings.updateStatus', $booking) }}" method="POST" class="mb-4">
+            <form id="updateStatusForm" action="{{ route('bookings.updateStatus', $booking) }}" method="POST" class="mb-4">
                 @csrf
                 @method('PATCH')
                 <div class="mb-3">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Update Status</label>
-                    <select name="status" class="w-full rounded-md border-gray-300 shadow-sm p-2 border text-sm">
+                    <select id="statusSelect" name="status" class="w-full rounded-md border-gray-300 shadow-sm p-2 border text-sm">
                         <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="confirmed" {{ $booking->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
                         <option value="completed" {{ $booking->status == 'completed' ? 'selected' : '' }}>Completed</option>
                         <option value="cancelled" {{ $booking->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                     </select>
                 </div>
+                <input type="hidden" name="reason" id="cancelReasonInput" value="">
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
                     <i class="fas fa-save mr-1"></i>
                     Update Status
@@ -198,6 +199,103 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Cancellation Reason Modal -->
+<div id="cancelReasonModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                <i class="fas fa-ban text-red-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4 text-center">Cancellation Reason</h3>
+            <div class="mt-2">
+                <label for="cancelReasonText" class="block text-sm font-medium text-gray-700 mb-1">Please provide a reason before cancelling</label>
+                <textarea id="cancelReasonText" rows="4" class="w-full border rounded-md p-2 text-sm border-gray-300" placeholder="Enter cancellation reason..."></textarea>
+                <p id="cancelReasonError" class="hidden text-xs text-red-600 mt-1">Reason is required.</p>
+            </div>
+            <div class="mt-4 flex justify-end space-x-2">
+                <button type="button" id="cancelReasonCloseBtn" class="px-4 py-2 bg-gray-300 text-gray-800 text-sm font-medium rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">Cancel</button>
+                <button type="button" id="cancelReasonConfirmBtn" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">Confirm & Update</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    (function() {
+        var statusSelect = document.getElementById('statusSelect');
+        var form = document.getElementById('updateStatusForm');
+        var modal = document.getElementById('cancelReasonModal');
+        var reasonInput = document.getElementById('cancelReasonInput');
+        var reasonText = document.getElementById('cancelReasonText');
+        var reasonError = document.getElementById('cancelReasonError');
+        var confirmBtn = document.getElementById('cancelReasonConfirmBtn');
+        var closeBtn = document.getElementById('cancelReasonCloseBtn');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            reasonText.focus();
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            reasonError.classList.add('hidden');
+        }
+
+        function isCancelledSelected() {
+            return statusSelect && statusSelect.value === 'cancelled';
+        }
+
+        if (statusSelect) {
+            statusSelect.addEventListener('change', function() {
+                if (isCancelledSelected()) {
+                    if (!reasonInput.value) {
+                        openModal();
+                    }
+                } else {
+                    // Clear reason if switching away from cancelled
+                    reasonInput.value = '';
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (isCancelledSelected() && !reasonInput.value) {
+                    e.preventDefault();
+                    openModal();
+                }
+            });
+        }
+
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function() {
+                var value = (reasonText.value || '').trim();
+                if (!value) {
+                    reasonError.classList.remove('hidden');
+                    reasonText.focus();
+                    return;
+                }
+                reasonError.classList.add('hidden');
+                reasonInput.value = value;
+                closeModal();
+                if (form) {
+                    form.submit();
+                }
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                closeModal();
+                // If user cancels modal, also reset select away from cancelled for clarity
+                if (isCancelledSelected()) {
+                    statusSelect.value = '{{ $booking->status }}';
+                }
+            });
+        }
+    })();
+    </script>
 </div>
 
 <!-- Delete Confirmation Modal -->

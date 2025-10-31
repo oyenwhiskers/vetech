@@ -54,6 +54,7 @@ class MobilePetController extends Controller
                         'breed' => $pet->breed,
                         'age' => $pet->age,
                         'gender' => $pet->gender,
+                        'status' => $pet->status,
                         'color' => $pet->color,
                         'weight' => optional(
                             $pet->treatments()->orderBy('treatment_date', 'desc')->first()
@@ -151,6 +152,7 @@ class MobilePetController extends Controller
                     'age' => $pet->age,
                     'gender' => $pet->gender,
                     'color' => $pet->color,
+                    'status' => $pet->status,
                     'weight' => $pet->weight,
                     'microchip_number' => $pet->microchip_number,
                     'medical_notes' => $pet->medical_notes,
@@ -208,6 +210,7 @@ class MobilePetController extends Controller
                     'breed' => $pet->breed,
                     'age' => $pet->age,
                     'gender' => $pet->gender,
+                    'status' => $pet->status,
                     'color' => $pet->color,
                     'weight' => $pet->weight,
                     'microchip_number' => $pet->microchip_number,
@@ -466,6 +469,7 @@ class MobilePetController extends Controller
                         'id' => $pet->id,
                         'name' => $pet->name,
                         'species' => $pet->species,
+                        'status' => $pet->status,
                     ],
                     'tag' => [
                         'id' => $tag->id,
@@ -610,6 +614,7 @@ class MobilePetController extends Controller
                         'id' => $pet->id,
                         'name' => $pet->name,
                         'species' => $pet->species,
+                        'status' => $pet->status,
                     ],
                     'released_tag_code' => $tag->tag_code,
                 ]
@@ -657,6 +662,7 @@ class MobilePetController extends Controller
                     'id' => $pet->id,
                     'name' => $pet->name,
                     'species' => $pet->species,
+                    'status' => $pet->status,
                 ],
                 'treatments' => $treatments->map(function ($treatment) {
                     return [
@@ -720,6 +726,7 @@ class MobilePetController extends Controller
                     'species' => $pet->species,
                     'breed' => $pet->breed,
                     'age' => $pet->age,
+                    'status' => $pet->status,
                 ],
                 'treatment_date' => $treatment->treatment_date,
                 'treatment_location' => $treatment->treatment_location,

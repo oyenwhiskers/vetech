@@ -130,14 +130,26 @@ class BookingController extends Controller
 
     public function updateStatus(Request $request, Booking $booking)
     {
-        if ($booking->booking_by !== Auth::id()) {
-            abort(403, 'You are not authorized to modify this booking status.');
-        }
-        $validated = $request->validate([
+        $request->validate([
             'status' => 'required|in:pending,confirmed,completed,cancelled',
         ]);
 
-        $booking->update($validated);
+        $updatedData = [
+            'status' => $request->input('status'),
+        ];
+
+        if ($request->input('status') === 'cancelled') {
+            // need to provide a reason for cancellation
+            $request->validate([
+                'reason' => 'required|string|max:255',
+            ]);
+            $updatedData['reason'] = $request->input('reason');
+        } else {
+            // clear any existing reason if not cancelled
+            $updatedData['reason'] = null;
+        }
+
+        $booking->update($updatedData);
 
         return redirect()->back()
             ->with('success', 'Booking status updated successfully.');

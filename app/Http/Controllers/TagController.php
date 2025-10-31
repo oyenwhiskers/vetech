@@ -136,11 +136,24 @@ class TagController extends Controller
             ->with('success', 'Tag deleted successfully.');
     }
 
-    public function scan($tagCode)
+    public function scan(Request $request)
     {
-        $tag = Tag::where('tag_code', $tagCode)
+        $request->validate([
+            'tag_code' => 'required|string|exists:tags,tag_code',
+        ]);
+
+        $tag = Tag::where('tag_code', $request->input('tag_code'))
             ->with(['pet.customer', 'pet.treatments.user', 'pet.treatments.collaborator'])
             ->firstOrFail();
+
+        // Ensure the tag is assigned to a pet before proceeding
+        if (empty($tag->pet)) {
+            return redirect()->back()->with('error', 'Tag is not assigned.');
+        }
+
+        if ($tag->status !== 'active') {
+            return redirect()->back()->with('error', 'Tag is not active.');
+        }
 
         return view('tags.scan', compact('tag'));
     }
