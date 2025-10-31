@@ -122,7 +122,7 @@
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Queue</th>
+                <!-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Queue</th> -->
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date & Time</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pet</th>
@@ -134,11 +134,11 @@
         <tbody class="bg-white divide-y divide-gray-200">
             @forelse($bookings as $booking)
             <tr>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <!-- <td class="px-6 py-4 whitespace-nowrap">
                     <span class="px-3 py-1 text-sm font-semibold rounded-full bg-gray-200">
                         #{{ $booking->queue_number }}
                     </span>
-                </td>
+                </td> -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                     <div>{{ $booking->booking_date->format('d M Y') }}</div>
                     <div class="text-gray-600">{{ date('H:i', strtotime($booking->booking_time)) }}</div>

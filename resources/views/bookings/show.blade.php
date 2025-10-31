@@ -17,12 +17,20 @@
             <div class="flex justify-center mb-4">
                 <div class="bg-white p-6 rounded-2xl shadow-md">
                     <div class="w-64 h-64 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-calendar-check text-white text-6xl"></i>
+                        @if($booking->status == 'pending')
+                            <i class="fas fa-clock text-white text-6xl"></i>
+                        @elseif($booking->status == 'confirmed')
+                            <i class="fas fa-calendar-check text-white text-6xl"></i>
+                        @elseif($booking->status == 'completed')
+                            <i class="fas fa-calendar-check text-white text-6xl"></i>
+                        @else
+                            <i class="fas fa-calendar-xmark text-white text-6xl"></i>
+                        @endif
                     </div>
                 </div>
             </div>
             
-            <div class="text-center mb-6">
+            <!-- <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center bg-white px-6 py-3 rounded-full shadow-md mb-3">
                     <i class="fas fa-hashtag text-blue-600 mr-3 text-xl"></i>
                     <span class="font-mono text-2xl font-bold text-gray-800">{{ $booking->queue_number }}</span>
@@ -30,7 +38,7 @@
                 <p class="text-sm text-gray-600">
                     <i class="fas fa-clock mr-1"></i>Queue Position
                 </p>
-            </div>
+            </div> -->
 
             <!-- Quick Status Update -->
             <form action="{{ route('bookings.updateStatus', $booking) }}" method="POST" class="mb-4">
