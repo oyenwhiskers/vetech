@@ -28,3 +28,6 @@ Thumbs.db
 bootstrap - Copy/
 database - Copy/
 *- Copy/
+
+# Zip files
+*.zip
