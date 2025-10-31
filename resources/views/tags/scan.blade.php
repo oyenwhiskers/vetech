@@ -43,7 +43,7 @@
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
             <div class="mb-8">
                 <div class="text-center mb-4">
-                    <h1 class="text-3xl font-bold text-blue-900">VETech - Department of Veterinary Services Sabah</h1>
+                    <h1 class="text-3xl font-bold text-blue-900">VETech - DVS Sandakan Sabah</h1>
                     <p class="text-gray-600">Pet Information & Treatment History</p>
                 </div>
                 <div class="flex justify-end">
