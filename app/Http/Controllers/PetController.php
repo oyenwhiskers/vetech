@@ -32,6 +32,7 @@ class PetController extends Controller
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
             'special_notes' => 'nullable|string',
+            'microchip_number' => 'nullable|string|max:255',
         ]);
 
         $validated['customer_id'] = $customer->id;
@@ -78,6 +79,7 @@ class PetController extends Controller
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
             'special_notes' => 'nullable|string',
+            'microchip_number' => 'nullable|string|max:255',
         ]);
 
         $pet->update($validated);

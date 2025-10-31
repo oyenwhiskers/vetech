@@ -16,17 +16,23 @@
         <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl shadow-lg p-8 sticky top-6">
             <div class="flex justify-center mb-4">
                 <div class="bg-white p-6 rounded-2xl shadow-md">
-                    <div class="w-64 h-64 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                        @if($booking->status == 'pending')
-                            <i class="fas fa-clock text-white text-6xl"></i>
-                        @elseif($booking->status == 'confirmed')
-                            <i class="fas fa-calendar-check text-white text-6xl"></i>
-                        @elseif($booking->status == 'completed')
-                            <i class="fas fa-calendar-check text-white text-6xl"></i>
-                        @else
-                            <i class="fas fa-calendar-xmark text-white text-6xl"></i>
-                        @endif
+                    @if($booking->status == 'pending')
+                    <div class="w-64 h-64 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-hourglass text-white text-6xl"></i>
                     </div>
+                    @elseif($booking->status == 'confirmed')
+                    <div class="w-64 h-64 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-white text-6xl"></i>
+                    </div>
+                    @elseif($booking->status == 'completed')
+                    <div class="w-64 h-64 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-circle-check text-white text-6xl"></i>
+                    </div>
+                    @else
+                    <div class="w-64 h-64 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar-xmark text-white text-6xl"></i>
+                    </div>
+                    @endif
                 </div>
             </div>
             

@@ -23,6 +23,7 @@ class Pet extends Model
         'weight',
         'special_notes',
         'pet_image',
+        'microchip_number',
     ];
 
     protected $casts = [

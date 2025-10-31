@@ -552,7 +552,7 @@ This is the complete API documentation for the VETech mobile application. The AP
       "gender": "male",
       "color": "Golden",
       "weight": 30.5,
-      "microchip_id": "123456789",
+      "microchip_number": "123456789",
       "medical_notes": "Allergic to chicken",
       "tag": {
         "id": 1,
@@ -582,7 +582,7 @@ This is the complete API documentation for the VETech mobile application. The AP
   "gender": "male",
   "color": "White",
   "weight": 4.5,
-  "microchip_id": "987654321",
+  "microchip_number": "987654321",
   "medical_notes": "No known allergies"
 }
 ```
@@ -601,7 +601,7 @@ This is the complete API documentation for the VETech mobile application. The AP
     "gender": "male",
     "color": "White",
     "weight": 4.5,
-    "microchip_id": "987654321",
+    "microchip_number": "987654321",
     "medical_notes": "No known allergies",
     "created_at": "2025-10-28T12:00:00.000000Z"
   }
@@ -616,7 +616,7 @@ This is the complete API documentation for the VETech mobile application. The AP
 - `gender`: Optional, one of: male, female
 - `color`: Optional, string
 - `weight`: Optional, numeric, min 0
-- `microchip_id`: Optional, string
+- `microchip_number`: Optional, string
 - `medical_notes`: Optional, string, max 1000
 
 ---
@@ -638,7 +638,7 @@ This is the complete API documentation for the VETech mobile application. The AP
     "gender": "male",
     "color": "Golden",
     "weight": 30.5,
-    "microchip_id": "123456789",
+    "microchip_number": "123456789",
     "medical_notes": "Allergic to chicken",
     "tag": {
       "id": 1,
@@ -688,7 +688,7 @@ This is the complete API documentation for the VETech mobile application. The AP
     "gender": "male",
     "color": "Golden",
     "weight": 32.0,
-    "microchip_id": "123456789",
+    "microchip_number": "123456789",
     "medical_notes": "Allergic to chicken and beef"
   }
 }

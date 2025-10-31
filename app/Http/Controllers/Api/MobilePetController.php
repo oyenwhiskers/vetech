@@ -53,7 +53,7 @@ class MobilePetController extends Controller
                         'gender' => $pet->gender,
                         'color' => $pet->color,
                         'weight' => $pet->weight,
-                        'microchip_id' => $pet->microchip_id,
+                        'microchip_number' => $pet->microchip_number,
                         'medical_notes' => $pet->medical_notes,
                         'tag' => $firstTag ? [
                             'id' => $firstTag->id,
@@ -102,7 +102,7 @@ class MobilePetController extends Controller
             'gender' => 'nullable|in:male,female',
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
-            'microchip_id' => 'nullable|string|max:255',
+            'microchip_number' => 'nullable|string|max:255',
             'medical_notes' => 'nullable|string|max:1000',
             'pet_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -130,7 +130,7 @@ class MobilePetController extends Controller
                 'gender' => $request->gender,
                 'color' => $request->color,
                 'weight' => $request->weight,
-                'microchip_id' => $request->microchip_id,
+                'microchip_number' => $request->microchip_number,
                 'medical_notes' => $request->medical_notes,
                 'pet_image' => $petImage ?? null,
             ]);
@@ -147,7 +147,7 @@ class MobilePetController extends Controller
                     'gender' => $pet->gender,
                     'color' => $pet->color,
                     'weight' => $pet->weight,
-                    'microchip_id' => $pet->microchip_id,
+                    'microchip_number' => $pet->microchip_number,
                     'medical_notes' => $pet->medical_notes,
                     'pet_image' => $pet->pet_image
                         ? (str_starts_with($pet->pet_image, 'http') || str_starts_with($pet->pet_image, '/storage/')
@@ -205,7 +205,7 @@ class MobilePetController extends Controller
                     'gender' => $pet->gender,
                     'color' => $pet->color,
                     'weight' => $pet->weight,
-                    'microchip_id' => $pet->microchip_id,
+                    'microchip_number' => $pet->microchip_number,
                     'medical_notes' => $pet->medical_notes,
                     'tag' => $firstTag ? [
                         'id' => $firstTag->id,
@@ -261,7 +261,7 @@ class MobilePetController extends Controller
             'gender' => 'nullable|in:male,female',
             'color' => 'nullable|string|max:255',
             'weight' => 'nullable|numeric|min:0',
-            'microchip_id' => 'nullable|string|max:255',
+            'microchip_number' => 'nullable|string|max:255',
             'medical_notes' => 'nullable|string|max:1000',
             'pet_image' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'remove_pet_image' => 'sometimes|boolean',
@@ -284,7 +284,7 @@ class MobilePetController extends Controller
                 'gender',
                 'color',
                 'weight',
-                'microchip_id',
+                'microchip_number',
                 'medical_notes',
             ]);
 
@@ -321,7 +321,7 @@ class MobilePetController extends Controller
                     'gender' => $pet->gender,
                     'color' => $pet->color,
                     'weight' => $pet->weight,
-                    'microchip_id' => $pet->microchip_id,
+                    'microchip_number' => $pet->microchip_number,
                     'medical_notes' => $pet->medical_notes,
                     'pet_image' => $pet->pet_image
                         ? (str_starts_with($pet->pet_image, 'http') || str_starts_with($pet->pet_image, '/storage/')
