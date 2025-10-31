@@ -8,6 +8,7 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class MobilePetController extends Controller
 {
@@ -32,6 +33,8 @@ class MobilePetController extends Controller
             $pets = Pet::where('customer_id', $user->customer_id)
                        ->with(['tag'])
                        ->get();
+            
+            // Check for latest weight per pet when building response
 
             return response()->json([
                 'success' => true,
@@ -52,7 +55,9 @@ class MobilePetController extends Controller
                         'age' => $pet->age,
                         'gender' => $pet->gender,
                         'color' => $pet->color,
-                        'weight' => $pet->weight,
+                        'weight' => optional(
+                            $pet->treatments()->orderBy('treatment_date', 'desc')->first()
+                        )->weight ?? $pet->weight,
                         'microchip_number' => $pet->microchip_number,
                         'medical_notes' => $pet->medical_notes,
                         'tag' => $firstTag ? [
@@ -67,8 +72,8 @@ class MobilePetController extends Controller
             ], 200);
             
         } catch (\Exception $e) {
-            \Log::error('Pet index error: ' . $e->getMessage());
-            \Log::error($e->getTraceAsString());
+            Log::error('Pet index error: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
             
             return response()->json([
                 'success' => false,
@@ -225,7 +230,7 @@ class MobilePetController extends Controller
             ], 200);
             
         } catch (\Exception $e) {
-            \Log::error('Pet show error: ' . $e->getMessage());
+            Log::error('Pet show error: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -473,7 +478,7 @@ class MobilePetController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
-            \Log::error('Tag assignment error: ' . $e->getMessage());
+            Log::error('Tag assignment error: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -611,7 +616,7 @@ class MobilePetController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
-            \Log::error('Tag release error: ' . $e->getMessage());
+            Log::error('Tag release error: ' . $e->getMessage());
             
             return response()->json([
                 'success' => false,
@@ -661,6 +666,8 @@ class MobilePetController extends Controller
                         'diagnosis' => $treatment->diagnosis,
                         'disease' => $treatment->disease,
                         'medicine_prescribed' => $treatment->medicine_prescribed,
+                        'weight' => $treatment->weight,
+                        'temperature' => $treatment->temperature,
                         'notes' => $treatment->notes,
                         'collaborator' => $treatment->collaborator ? [
                             'id' => $treatment->collaborator->id,
@@ -720,6 +727,8 @@ class MobilePetController extends Controller
                 'disease' => $treatment->disease,
                 'medicine_prescribed' => $treatment->medicine_prescribed,
                 'dosage' => $treatment->dosage,
+                'weight' => $treatment->weight,
+                'temperature' => $treatment->temperature,
                 'notes' => $treatment->notes,
                 'collaborator' => $treatment->collaborator ? [
                     'id' => $treatment->collaborator->id,

@@ -23,3 +23,12 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+<IfModule mod_headers.c>
+    # CORS headers for storage files (images, QR codes, etc.)
+    <FilesMatch "\.(jpg|jpeg|png|gif|svg|ico|pdf|mp4|mp3)$">
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        Header set Access-Control-Allow-Headers "*"
+    </FilesMatch>
+</IfModule>
