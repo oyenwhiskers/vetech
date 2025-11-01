@@ -117,9 +117,11 @@
                                     <div>
                                         <p class="font-semibold">{{ $treatment->treatment_date->format('d M Y') }}</p>
                                         <p class="text-sm text-gray-600">
-                                            Dr. {{ $treatment->user->name }}
+                                            {{ $treatment->user->name }}
                                             @if($treatment->collaborator)
                                                 - {{ $treatment->collaborator->clinic_name }}
+                                            @else 
+                                                - DVS
                                             @endif
                                         </p>
                                     </div>
