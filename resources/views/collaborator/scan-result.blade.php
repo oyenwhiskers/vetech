@@ -95,6 +95,78 @@
         </div>
     </div>
 
+    <!-- Vitals Section -->
+    <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-heartbeat text-red-600"></i> Vitals History
+            </h3>
+            @php
+                $vitalsData = $tag->pet->treatments->filter(function($treatment) {
+                    return !$treatment->trashed() && (!is_null($treatment->weight) || !is_null($treatment->temperature));
+                })->sortBy('treatment_date');
+            @endphp
+            @if($vitalsData->count() > 0)
+                <button onclick="document.getElementById('vitalsChartModal').classList.remove('hidden')" 
+                    class="text-sm sm:text-base px-3 py-2 sm:px-4 bg-green-600 hover:bg-green-700 text-white rounded-md transition font-medium flex items-center gap-2">
+                    <i class="fas fa-chart-line"></i> <span class="hidden sm:inline">View Chart</span>
+                </button>
+            @endif
+        </div>
+        
+        @if($vitalsData->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <!-- Weight Chart -->
+                @php
+                    $weightData = $vitalsData->filter(function($t) { return !is_null($t->weight); });
+                @endphp
+                @if($weightData->count() > 0)
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 sm:p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm sm:text-base font-semibold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-weight text-blue-600"></i> Weight (kg)
+                            </h4>
+                            <span class="text-xs text-gray-600">{{ $weightData->count() }} records</span>
+                        </div>
+                        <div style="height: 100px; position: relative;">
+                            <canvas id="weightMiniChart"></canvas>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Temperature Chart -->
+                @php
+                    $tempData = $vitalsData->filter(function($t) { return !is_null($t->temperature); });
+                @endphp
+                @if($tempData->count() > 0)
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-3 sm:p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm sm:text-base font-semibold text-gray-800 flex items-center gap-2">
+                                <i class="fas fa-temperature-high text-red-600"></i> Temperature (°C)
+                            </h4>
+                            <span class="text-xs text-gray-600">{{ $tempData->count() }} records</span>
+                        </div>
+                        <div style="height: 100px; position: relative;">
+                            <canvas id="temperatureMiniChart"></canvas>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            @if($weightData->count() == 0 && $tempData->count() == 0)
+                <div class="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <i class="fas fa-heartbeat text-3xl text-gray-400 mb-2"></i>
+                    <p class="text-gray-500 text-sm font-medium">No vitals data recorded yet</p>
+                </div>
+            @endif
+        @else
+            <div class="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <i class="fas fa-heartbeat text-3xl text-gray-400 mb-2"></i>
+                <p class="text-gray-500 text-sm font-medium">No vitals data recorded yet</p>
+            </div>
+        @endif
+    </div>
+
     <!-- Treatment History -->
     <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
         <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Treatment History</h3>
@@ -195,6 +267,29 @@
             <i class="fas fa-arrow-left mr-2"></i>Back to Scanner
         </a>
     </div>
+
+    <!-- Vitals Chart Modal -->
+    <div id="vitalsChartModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+        <div class="w-full h-full flex items-center justify-center p-4 overflow-y-auto">
+            <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 relative">
+                <div class="flex items-center justify-between mb-4 sm:mb-6">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <span class="bg-green-600 text-white rounded-full flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shadow-lg">
+                            <i class="fas fa-chart-line text-lg sm:text-2xl"></i>
+                        </span>
+                        <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-[#334da1]">Vitals Chart</h3>
+                    </div>
+                    <button onclick="document.getElementById('vitalsChartModal').classList.add('hidden')" class="text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="mb-4" style="height: 400px; position: relative;">
+                    <canvas id="vitalsDetailChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Treatment Details Modal -->
     <div id="treatmentDetailsModal" class="hidden fixed inset-0 z-50">
         <div class="w-full h-full bg-black bg-opacity-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
@@ -246,6 +341,293 @@
         var overlay = e.target.closest('#treatmentDetailsModal > div');
         if (!overlay && e.target.id === 'treatmentDetailsModal') {
             document.getElementById('treatmentDetailsModal').classList.add('hidden');
+        }
+    });
+
+    // Vitals Charts
+    document.addEventListener('DOMContentLoaded', function() {
+        @php
+            $vitalsData = $tag->pet->treatments->filter(function($treatment) {
+                return !$treatment->trashed() && (!is_null($treatment->weight) || !is_null($treatment->temperature));
+            })->sortBy('treatment_date')->values();
+            
+            $weightData = $vitalsData->filter(function($t) { return !is_null($t->weight) && $t->weight !== ''; })->values();
+            $tempData = $vitalsData->filter(function($t) { return !is_null($t->temperature) && $t->temperature !== ''; })->values();
+            
+            $weightLabels = [];
+            $weightValues = [];
+            foreach($weightData as $t) {
+                $weightLabels[] = $t->treatment_date->format('M d');
+                $weightValues[] = (float)$t->weight;
+            }
+            
+            $tempLabels = [];
+            $tempValues = [];
+            foreach($tempData as $t) {
+                $tempLabels[] = $t->treatment_date->format('M d');
+                $tempValues[] = (float)$t->temperature;
+            }
+            
+            // Get unique dates
+            $allDates = [];
+            foreach($vitalsData as $t) {
+                $dateStr = $t->treatment_date->format('Y-m-d');
+                if (!in_array($dateStr, $allDates)) {
+                    $allDates[] = $dateStr;
+                }
+            }
+            sort($allDates);
+            
+            $allLabels = [];
+            foreach($allDates as $date) {
+                $allLabels[] = \Carbon\Carbon::parse($date)->format('M d, Y');
+            }
+            
+            // Create arrays aligned with all dates
+            $combinedWeights = [];
+            $combinedTemps = [];
+            foreach($allDates as $date) {
+                $treatment = null;
+                foreach($vitalsData as $t) {
+                    if ($t->treatment_date->format('Y-m-d') === $date) {
+                        $treatment = $t;
+                        break;
+                    }
+                }
+                $combinedWeights[] = $treatment && $treatment->weight !== null && $treatment->weight !== '' ? (float)$treatment->weight : null;
+                $combinedTemps[] = $treatment && $treatment->temperature !== null && $treatment->temperature !== '' ? (float)$treatment->temperature : null;
+            }
+        @endphp
+
+        // Mini Weight Chart
+        @if($weightData->count() > 0 && count($weightLabels) > 0 && count($weightValues) > 0)
+        const weightCtx = document.getElementById('weightMiniChart');
+        if (weightCtx) {
+            try {
+                new Chart(weightCtx, {
+                    type: 'line',
+                    data: {
+                        labels: @json($weightLabels),
+                        datasets: [{
+                            label: 'Weight (kg)',
+                            data: @json($weightValues),
+                        borderColor: 'rgb(37, 99, 235)',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 2,
+                        pointHoverRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    aspectRatio: 1,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        }
+                    }
+                }
+                });
+            } catch(e) {
+                console.error('Error creating weight chart:', e);
+            }
+        }
+        @endif
+
+        // Mini Temperature Chart
+        @if($tempData->count() > 0 && count($tempLabels) > 0 && count($tempValues) > 0)
+        const tempCtx = document.getElementById('temperatureMiniChart');
+        if (tempCtx) {
+            try {
+                new Chart(tempCtx, {
+                    type: 'line',
+                    data: {
+                        labels: @json($tempLabels),
+                        datasets: [{
+                            label: 'Temperature (°C)',
+                            data: @json($tempValues),
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 2,
+                        pointHoverRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    aspectRatio: 1,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        }
+                    }
+                }
+                });
+            } catch(e) {
+                console.error('Error creating temperature chart:', e);
+            }
+        }
+        @endif
+
+        // Detailed Vitals Chart
+        let vitalsDetailChart = null;
+        const vitalsDetailCtx = document.getElementById('vitalsDetailChart');
+        
+        function initVitalsDetailChart() {
+            if (!vitalsDetailCtx || vitalsDetailChart) return;
+            
+            try {
+                vitalsDetailChart = new Chart(vitalsDetailCtx, {
+                type: 'line',
+                data: {
+                    labels: @json($allLabels),
+                    datasets: [
+                        @if($weightData->count() > 0)
+                        {
+                            label: 'Weight (kg)',
+                            data: @json($combinedWeights),
+                            borderColor: 'rgb(37, 99, 235)',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            yAxisID: 'y'
+                        },
+                        @endif
+                        @if($tempData->count() > 0)
+                        {
+                            label: 'Temperature (°C)',
+                            data: @json($combinedTemps),
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            yAxisID: 'y1'
+                        }
+                        @endif
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    aspectRatio: 2,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: @if($weightData->count() > 0) true @else false @endif,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Weight (kg)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: @if($tempData->count() > 0) true @else false @endif,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Temperature (°C)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            }
+                        }
+                    }
+                }
+                });
+            } catch(e) {
+                console.error('Error creating detailed vitals chart:', e);
+            }
+        }
+
+        // Initialize chart when modal opens
+        const vitalsModal = document.getElementById('vitalsChartModal');
+        if (vitalsModal) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (!vitalsModal.classList.contains('hidden') && !vitalsDetailChart) {
+                        setTimeout(initVitalsDetailChart, 100);
+                    }
+                });
+            });
+            observer.observe(vitalsModal, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
         }
     });
     </script>

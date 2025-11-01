@@ -136,13 +136,9 @@ class TagController extends Controller
             ->with('success', 'Tag deleted successfully.');
     }
 
-    public function scan(Request $request)
+    public function scan($tagCode)
     {
-        $request->validate([
-            'tag_code' => 'required|string|exists:tags,tag_code',
-        ]);
-
-        $tag = Tag::where('tag_code', $request->input('tag_code'))
+        $tag = Tag::where('tag_code', $tagCode)
             ->with(['pet.customer', 'pet.treatments.user', 'pet.treatments.collaborator'])
             ->firstOrFail();
 
